@@ -61,7 +61,7 @@ function onEditStudent(index) {
     setValueStudent('.student-form .name', student.name)
     setValueStudent('.student-form .surname', student.surname)
 
-    setHTML('.createStudent', 'Save')
+    setHTML('.createStudent', 'Kaydet')
     enableEditMode()
 }
 
@@ -75,7 +75,7 @@ function getStudent(index) {
 }
 
 function onDeleteStudent(index) {
-    if (confirm('Are you sure???')) {
+    if (confirm('Talebe Silinsin mi????')) {
         deleteStudent(index)
     }
 
@@ -105,7 +105,7 @@ function editStudentHandle() {
     })
     renderStudents()
     disableEditMode()
-    setHTML('.createStudent', 'Create')
+    setHTML('.createStudent', 'Ekle')
     studentsFormReset()
 
 }

@@ -12,7 +12,7 @@ body {
 }
 
 .navbar {
-  display: flex;
+  display: inline-flex;
   position: relative;
   justify-content: space-around;
   align-items: center;
@@ -116,21 +116,22 @@ li a:hover, .menu:hover {
 }
 .content {
   flex: 1;
-
   padding: 12px;
 }
 
 .form-group {
-  width: 100%;
+  display: inline-flex;
+  width: auto;
   overflow: hidden;
   margin: 4px 4px 4px 16px;
+  flex-direction: row;
 }
 .label, .input {
   float: left;
 }
 .label {
-  display: block;
-  width: 80px;
+  display: inline-block;
+  padding-right: 9px;
   font-weight: 600;
   color: #fff;
 }
@@ -138,7 +139,7 @@ li a:hover, .menu:hover {
   padding: 4px 8px;
   border: 1px solid #ccc;
   outline: none;
-  width: 220px;
+  width: 300px;
   height: 24px;
   font-size: 16px;
 }
@@ -146,7 +147,7 @@ li a:hover, .menu:hover {
 button {
   padding: 8px 16px;
   font-size: 16px;
-  margin: 12px 0 0 236px;
+  margin: 12px 0 0 23px;
 }
 .student {
   list-style: none;
