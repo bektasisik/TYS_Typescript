@@ -1,1 +1,142 @@
-(()=>{"use strict";var e={525:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.default=function(e){return--e}},995:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.default=function(e){return++e}},607:function(e,t,r){var n=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:!0});var u=n(r(525)),o=n(r(995)),i=document.querySelector("#increment"),c=document.querySelector("#decrement"),a=document.querySelector("#count-value");i.addEventListener("click",(function(){var e=parseFloat(a.innerText),t=o.default(e);a.innerText=t.toString()})),c.addEventListener("click",(function(){var e=parseFloat(a.innerText),t=u.default(e);a.innerText=t.toString()}))}},t={};!function r(n){var u=t[n];if(void 0!==u)return u.exports;var o=t[n]={exports:{}};return e[n].call(o.exports,o,o.exports,r),o.exports}(607)})();
+var students = [
+    {
+        name: 'Veli',
+        surname: 'Çam',
+    },
+    {
+        name: 'Abdurrahman',
+        surname: 'Kutlu',
+    },
+    {
+        name: 'Emre',
+        surname: 'Yavuz',
+    },
+    {
+        name: 'Enes Bahadir',
+        surname: 'Yildirim',
+    },
+    {
+        name: 'Oğuz Kaan',
+        surname: 'Koca',
+    },
+    {
+        name: 'Enver',
+        surname: 'Yildirim',
+    },
+]
+
+var editMode = false
+var editStudentIdIpm
+
+document.addEventListener('DOMContentLoaded', function () {
+    renderStudents()
+})
+
+function enableEditMode() {
+    editMode = true
+}
+
+function disableEditMode() {
+    editMode = false
+}
+
+function renderStudents() {
+    var html = ''
+    for (var i = 0; i < students.length; i++) {
+        var student = students[i]
+        html += '<li class="student">'
+        html += '<p><span>Name:</span>' + student.name + '</p>'
+        html += '<p><span>Surname:</span>' + student.surname + '</p>'
+        html += '<i class="student-delete" onclick="onDeleteStudent(' + i + ')">X</i>'
+        html += '<i class="student-edit" onclick="onEditStudent(' + i + ')">Edit</i>'
+        html += '</li>'
+    }
+    setHTML('#students-list', html)
+}
+
+
+function onEditStudent(index) {
+    var student = getStudent(index)
+    editStudentIdIpm = index
+    setValueStudent('.student-form .name', student.name)
+    setValueStudent('.student-form .surname', student.surname)
+
+    setHTML('.createStudent', 'Save')
+    enableEditMode()
+}
+
+function setValueStudent(selector, value) {
+    var element = document.querySelector(selector)
+    element.value = value
+}
+
+function getStudent(index) {
+    return students[index]
+}
+
+function onDeleteStudent(index) {
+    if (confirm('Are you sure???')) {
+        deleteStudent(index)
+    }
+
+    renderStudents()
+}
+
+function deleteStudent(index) {
+    students.splice(index, 1)
+}
+
+function setHTML(selector, html) {
+    var studentElement = document.querySelector(selector)
+    studentElement.innerHTML = html
+}
+
+function getInputValue(selector) {
+    var inputValue = document.querySelector(selector)
+    return inputValue.value
+}
+function editStudentHandle() {
+    var name = getInputValue('.student-form .name')
+    var surname = getInputValue('.student-form .surname')
+
+    studentIndex(editStudentIdIpm, {
+        name: name,
+        surname: surname,
+    })
+    renderStudents()
+    disableEditMode()
+    setHTML('.createStudent', 'Create')
+    studentsFormReset()
+
+}
+
+function studentIndex(index, student) {
+    students[index] = student
+}
+
+function studentsFormReset() {
+    setValueStudent('.student-form .name', '')
+    setValueStudent('.student-form .surname', '')
+}
+
+function onClickCreateStudent() {
+    if (editMode == true) {
+        editStudentHandle()
+    } else {
+        var name = getInputValue('.student-form .name')
+        var surname = getInputValue('.student-form .surname')
+
+        var student = {
+            name: name,
+            surname: surname,
+        }
+    }
+
+    addStudent(student)
+    renderStudents()
+    studentsFormReset()
+}
+
+function addStudent(student) {
+    students.push(student)
+}

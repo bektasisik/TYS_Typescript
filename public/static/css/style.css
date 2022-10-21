@@ -1,119 +1,195 @@
 * {
   box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  width: 100%;
+  height: 88%;
+  justify-content: center;
+}
+
+.navbar {
+  display: flex;
+  position: relative;
+  justify-content: space-around;
+  align-items: center;
+  background-color:rgba(255, 255, 255, 0.651);
+  color: #34495e;
+  border-radius: 35px;
+  margin: 35px 500px 10px 500px;
+}
+
+.title {
+  font-size: 1.75rem;
+  margin: 0.5rem;
+}
+
+.navbar-links {
+  height: 100%;
+}
+
+.navbar-links ul {
+  display: flex;
   margin: 0;
   padding: 0;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-}
-
-.header {
-  position: relative;
-  background: #3178c6;
-  width: 100%;
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-.hero-text {
-  font-size: 2rem;
-  color: #f5f5f5;
-  text-transform: capitalize;
-}
-
-.middle-section {
-  position: relative;
-  width: 100%;
-  padding: 0.7rem 2rem;
-  background: #262626;
-  color: #f5f5f5;
-}
-
-.middle-section-text {
-  font-size: 1.2rem;
-  text-transform: lowercase;
-}
-
-.middle-section a img {
-  height: 1.7rem;
-}
-
-.end-section {
-  position: relative;
-  width: 100%;
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.learn-ts-container {
-  width: 50%;
-  height: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.counter-example {
-  width: 50%;
-  font-family: monospace;
-  font-size: 1.4rem;
-}
-
-#increment,
-#decrement {
-  padding: 0.4rem;
-  font-size: 1.2rem;
-  background-color: #aca8a823;
-  border: none;
-  outline: none;
-}
-
-#increment:hover,
-#decrement:hover {
-  background-color: #262626;
-  color: #f5f5f5;
-}
-
-.learn-ts-text {
-  color: #111111;
-  font-size: 2rem;
-}
-
-.learn-ts-container a {
+.navbar-links li a {
+  display: block;
   text-decoration: none;
+  font-size: 1.25rem;
+  color: black;
+  padding: 1rem;
+  border-radius: 25px;
 }
 
-.get-started-btn {
-  cursor: pointer;
-  background-color: #3178c6;
-  border: none;
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+* {
+  font-family: Raleway;
+}
+
+html {
+  background-image: url(/public/assets/wallpaper.jpeg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-color: #DFDFDF;
+  position: relative;
+}
+
+
+iframe {
+  
+  width: 100%;
+  height: 100%;
+  position: static;  
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li {
+    float: none;
+    
+}
+
+li a:hover, .menu:hover {
+    background-color: #f4d03f;
+    border-radius: 25px;
+    position: sticky;
+    
+}
+
+.acilir-menu {
+    display: none;
+    position: fixed;
+    min-width: 150px;
+    
+}
+
+.acilir-menu div {
+    display: inline;
+    text-align: left;
+}
+
+.acilir-menu a:hover {
+    color: black;
+    position: relative;
+}
+
+.menu:hover .acilir-menu {
+    display: block;
+    position: fixed;
+    
+}
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.content {
+  flex: 1;
+
+  padding: 12px;
+}
+
+.form-group {
+  width: 100%;
+  overflow: hidden;
+  margin: 4px 4px 4px 16px;
+}
+.label, .input {
+  float: left;
+}
+.label {
+  display: block;
+  width: 80px;
+  font-weight: 600;
+  color: #fff;
+}
+.input {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
   outline: none;
-  color: #f5f5f5;
-  display: flex;
-  font-size: 1.2rem;
-  text-transform: capitalize;
-  padding: 0.5rem 1rem;
+  width: 220px;
+  height: 24px;
+  font-size: 16px;
 }
 
-.get-started-btn:hover {
-  background-color: #262626;
+button {
+  padding: 8px 16px;
+  font-size: 16px;
+  margin: 12px 0 0 236px;
 }
-
-.flex {
-  display: flex;
-  gap: 10px;
+.student {
+  list-style: none;
+  float: left;
+  width: 230px;
+  background: #fff;
+  padding: 8px;
+  line-height: 24px;
+  margin: 4px 0 0 4px;
+  position: relative;
 }
-
-.flex-center {
+.student span {
+  font-weight: 600;
+}
+.student-delete, .student-edit {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 100%;
+  background: #ccc;
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 0 4px;
+}
+.student-delete:hover, .student-edit:hover {
+  
+  color: #fff;
+  cursor: pointer;
+}
+.student-edit {
+  top: 40px;
+}
+.student-delete:hover {
+  cursor: pointer;
+
+}
+.createStudent:hover {
+
+  color: #fff;
 }
