@@ -1,7 +1,5 @@
 import { Student } from "./Student";
 import { Attendance } from "./Attendance";
-
-
 export class StudentAttendance {
     student: Student;
     attendance: Attendance;
@@ -21,13 +19,10 @@ export class StudentAttendance {
     }
 
     getIsAbsenceToString(isAbsence: boolean): string {
-        if (isAbsence === false) {
-            return "Yok";
-        }
-        return "Var";
+        return isAbsence ? "Var" : "Yok";
     }
 
     showInfoStudentAttendance() {
-        console.log(this.student + " " + this.attendance + " " + this.isAbsence);
+        console.log(this.student + " " + this.attendance + " " + this.getIsAbsenceToString);
     }
 }

@@ -6,7 +6,6 @@ export class AttendanceService {
     attendances!: Array<Attendance>;
     studentAttendances!: Array<StudentAttendance>;
     sequence: number = 1;
-    attendanceMap: Map<Student, Boolean> = new Map();
 
     getAttendances(): Array<Attendance> {
         return this.attendances;
