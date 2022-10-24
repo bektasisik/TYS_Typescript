@@ -1,14 +1,16 @@
-class Attendance {
+import {LocalDate} from 'ts-extended-types';
+
+export class Attendance {
     id: number;
     prayerTime: string;
-    date: Date;
+    date!: LocalDate;
 
-    constructor(id: number, prayerTime: string, date: Date) {
+    constructor(id: number, prayerTime: string) {
         this.id = id;
         this.prayerTime = prayerTime;
-        this.date = date;
     }
+    
     showInfoAttendance() {
-        console.log(this.id + " " + this.prayerTime + " " + this.date);
+        console.log(this.id + " " + this.prayerTime + " " + this.date.getDate);
     }
 }

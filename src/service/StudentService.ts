@@ -1,28 +1,27 @@
+import { Student } from "../domain/Student";
 
-import {Student} from "../domain/Student";
-
-class StudentService{
+export class StudentService {
     students!: Array<Student>;
-    sequence:number = 1;
+    sequence: number = 1;
 
-    addStudent(name:string,surname:string){
-        let student = new Student(this.sequence++,name,surname)
+    addStudent(name: string, surname: string) {
+        let student = new Student(this.sequence++, name, surname)
         this.students.push(student);
     }
 
-    getStudents():Array<Student>{
+    getStudents(): Array<Student> {
         return this.students;
     }
-    getStudent(studentId:number){
-        this.students.filter(student -> student.getId() == studentId).findFirst().orElseThrow();
+    getStudent(studentId: number): Student {
+        return this.students.filter(student => student.id === studentId)[0];
     }
-    
-    updateStudent(studentId:number,name:string,surname:string){
+
+    updateStudent(studentId: number, name: string, surname: string) {
         let student = this.getStudent(studentId);
-        student.name = name;
-        student.surname = surname;
+        student.setName(name);
+        student.setSurname(surname);
     }
-    deleteStudent(studentId: number){
+    deleteStudent(studentId: number) {
         this.students.splice(studentId);
     }
 

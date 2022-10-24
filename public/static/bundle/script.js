@@ -1,142 +1,70 @@
-var students = [
-    {
-        name: 'Veli',
-        surname: 'Çam',
+(() => {
+    "use strict";
+    var t = {
+        332: (t, e) => {
+            Object.defineProperty(e, "__esModule", { value: !0 }),
+                (e.Student = void 0);
+            var n = (function () {
+                function t(t, e, n) {
+                    (this.id = t), (this.name = e), (this.surname = n);
+                }
+                return (
+                    (t.prototype.increaseAbsent = function () {
+                        this.absent = this.absent + 1;
+                    }),
+                    (t.prototype.setName = function (t) {
+                        this.name = t;
+                    }),
+                    (t.prototype.setSurname = function (t) {
+                        this.surname = t;
+                    }),
+                    (t.prototype.showInfoStudent = function () {
+                        console.log(this.name + " " + this.surname + " " + this.absent);
+                    }),
+                    t
+                );
+            })();
+            e.Student = n;
+        },
+        493: (t, e, n) => {
+            Object.defineProperty(e, "__esModule", { value: !0 }),
+                (e.StudentService = void 0);
+            var u = n(332),
+                s = (function () {
+                    function t() {
+                        this.sequence = 1;
+                    }
+                    return (
+                        (t.prototype.addStudent = function (t, e) {
+                            var n = new u.Student(this.sequence++, t, e);
+                            this.students.push(n);
+                        }),
+                        (t.prototype.getStudents = function () {
+                            return this.students;
+                        }),
+                        (t.prototype.getStudent = function (t) {
+                            return this.students.filter(function (e) {
+                                return e.id === t;
+                            })[0];
+                        }),
+                        (t.prototype.updateStudent = function (t, e, n) {
+                            var u = this.getStudent(t);
+                            u.setName(e), u.setSurname(n);
+                        }),
+                        (t.prototype.deleteStudent = function (t) {
+                            this.students.splice(t);
+                        }),
+                        t
+                    );
+                })();
+            e.StudentService = s;
+        },
     },
-    {
-        name: 'Abdurrahman',
-        surname: 'Kutlu',
-    },
-    {
-        name: 'Emre',
-        surname: 'Yavuz',
-    },
-    {
-        name: 'Enes Bahadir',
-        surname: 'Yildirim',
-    },
-    {
-        name: 'Oğuz Kaan',
-        surname: 'Koca',
-    },
-    {
-        name: 'Enver',
-        surname: 'Yildirim',
-    },
-]
-
-var editMode = false
-var editStudentIdIpm
-
-document.addEventListener('DOMContentLoaded', function () {
-    renderStudents()
-})
-
-function enableEditMode() {
-    editMode = true
-}
-
-function disableEditMode() {
-    editMode = false
-}
-
-function renderStudents() {
-    var html = ''
-    for (var i = 0; i < students.length; i++) {
-        var student = students[i]
-        html += '<li class="student">'
-        html += '<p><span>Name:</span>' + student.name + '</p>'
-        html += '<p><span>Surname:</span>' + student.surname + '</p>'
-        html += '<i class="student-delete" onclick="onDeleteStudent(' + i + ')">X</i>'
-        html += '<i class="student-edit" onclick="onEditStudent(' + i + ')">Edit</i>'
-        html += '</li>'
-    }
-    setHTML('#students-list', html)
-}
-
-
-function onEditStudent(index) {
-    var student = getStudent(index)
-    editStudentIdIpm = index
-    setValueStudent('.student-form .name', student.name)
-    setValueStudent('.student-form .surname', student.surname)
-
-    setHTML('.createStudent', 'Kaydet')
-    enableEditMode()
-}
-
-function setValueStudent(selector, value) {
-    var element = document.querySelector(selector)
-    element.value = value
-}
-
-function getStudent(index) {
-    return students[index]
-}
-
-function onDeleteStudent(index) {
-    if (confirm('Talebe Silinsin mi????')) {
-        deleteStudent(index)
-    }
-
-    renderStudents()
-}
-
-function deleteStudent(index) {
-    students.splice(index, 1)
-}
-
-function setHTML(selector, html) {
-    var studentElement = document.querySelector(selector)
-    studentElement.innerHTML = html
-}
-
-function getInputValue(selector) {
-    var inputValue = document.querySelector(selector)
-    return inputValue.value
-}
-function editStudentHandle() {
-    var name = getInputValue('.student-form .name')
-    var surname = getInputValue('.student-form .surname')
-
-    studentIndex(editStudentIdIpm, {
-        name: name,
-        surname: surname,
-    })
-    renderStudents()
-    disableEditMode()
-    setHTML('.createStudent', 'Ekle')
-    studentsFormReset()
-
-}
-
-function studentIndex(index, student) {
-    students[index] = student
-}
-
-function studentsFormReset() {
-    setValueStudent('.student-form .name', '')
-    setValueStudent('.student-form .surname', '')
-}
-
-function onClickCreateStudent() {
-    if (editMode == true) {
-        editStudentHandle()
-    } else {
-        var name = getInputValue('.student-form .name')
-        var surname = getInputValue('.student-form .surname')
-
-        var student = {
-            name: name,
-            surname: surname,
-        }
-    }
-
-    addStudent(student)
-    renderStudents()
-    studentsFormReset()
-}
-
-function addStudent(student) {
-    students.push(student)
-}
+        e = {};
+    new ((function n(u) {
+        var s = e[u];
+        if (void 0 !== s) return s.exports;
+        var o = (e[u] = { exports: {} });
+        return t[u](o, o.exports, n), o.exports;
+    })(493).StudentService)().getStudent(0);
+})();

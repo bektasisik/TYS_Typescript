@@ -1,14 +1,26 @@
-class Student {
+export class Student {
+    id: number;
     name: string;
     surname: string;
-    absence: number;
+    absent!: number;
 
-    constructor(name: string, surname: string, absence: number) {
+    constructor(id: number, name: string, surname: string) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
-        this.absence = absence;
     }
+    increaseAbsent() {
+        this.absent = this.absent + 1;
+    }
+
+    setName(name: string) {
+        this.name = name;
+    }
+    setSurname(surname: string) {
+        this.surname = surname;
+    }
+
     showInfoStudent() {
-        console.log(this.name + " " + this.surname + " " + this.absence);
+        console.log(this.name + " " + this.surname + " " + this.absent);
     }
 }
