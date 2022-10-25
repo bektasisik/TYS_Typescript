@@ -2,12 +2,13 @@ export class Student {
     id: number;
     name: string;
     surname: string;
-    absent!: number;
+    absent: number ;
 
     constructor(id: number, name: string, surname: string) {
         this.id = id;
         this.name = name;
         this.surname = surname;
+        this.absent = 0;
     }
     increaseAbsent() {
         this.absent = this.absent + 1;
