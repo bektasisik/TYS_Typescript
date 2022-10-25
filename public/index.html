@@ -18,18 +18,20 @@
 <body>
   <header class="header">
     <nav class="navbar">
-      <a href="#" class="logo">
+      <a href="" class="logo">
         <img src="./assets/logo_transparent_old.png" alt="logo" />
       </a>
       <div class="title">TALEBE YOKLAMA SİSTEMİ</div>
       <div class="navbar-links">
         <ul>
-          <li class="menu"><a href="#studentSection" id="studentUi">Talebe İşlemleri</a></li>
+          <li class="menu">
+            <a href="#studentSection" id="studentUi">Talebe İşlemleri</a>
+          </li>
           <li class="menu">
             <a href="#">Yoklama İşlemleri</a>
             <div class="acilir-menu">
               <a href="#takeAttendance">Yoklama Al</a>
-              <a href="#listWithAttendanceID">Vakite Göre Yoklama Listele</a>
+              <a href="#listWithAttendanceId">Vakite Göre Yoklama Listele</a>
               <a href="#listWithStudentId">Talebeye Göre Yoklama Listele</a>
             </div>
           </li>
@@ -39,10 +41,10 @@
   </header>
 
   <section id="home" class="page container">  </section>
-  
-  <!-- STUDENT CRUD PAGE -->
+
+  <!-- STUDENT CRUD PAGE -->  
   <section id="studentSection" class="page container">
-    <form id="add-student">
+    <form id="add-student" >
       <div>
         <label for="name">Talebenin Adı: </label>
         <input type="text" name="name" id="name" class="name" />
@@ -52,62 +54,22 @@
         <input type="text" name="surname" id="surname" class="surname" />
       </div>
       <div>
-        <input type="submit" value="Ekle" class="addStudentButton" id="addStudentButton" />
+        <input type="submit" value="Ekle" class="addStudentButton" id="addButton"/>
       </div>
     </form>
-    <div class="studentList  table-responsive">
+    <div class="studentList table-responsive">
       <table id="studentListTable" class="table table-hover">
-        <thead class="table-secondary">
+        <thead class="table-se[condary">
           <tr>
             <th>Talebe NO</th>
             <th>Talebe Adı</th>
             <th>Talebe Soyadı</th>
+            <th>Toplam Devamsızlık</th>
             <th>İşlemler</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Ali</td>
-            <td>Yılmaz</td>
-            <td>
-              <button><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                  class="bi bi-trash" viewBox="0 0 16 16">
-                  <path
-                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                  <path fill-rule="evenodd"
-                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                </svg></button>
-              <button class="updateStudentButton"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                  fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
-                  <path
-                    d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                </svg></button>
-            </td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Ali</td>
-            <td>Yılmaz</td>
-            <td>
-              <button><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                  class="bi bi-trash" viewBox="0 0 16 16">
-                  <path
-                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                  <path fill-rule="evenodd"
-                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                </svg></button>
-              <button class="updateStudentButton"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                  fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
-                  <path
-                    d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                </svg></button>
-            </td>
-          </tr>
-          
-          </tr>
+        <tbody id="studentListBody">
+
         </tbody>
       </table>
     </div>
@@ -130,7 +92,7 @@
             <th>Talebe NO</th>
             <th>Talebe Adı</th>
             <th>Talebe Soyadı</th>
-            <th>+/-</th>
+            <th>+/-/İ/H</th>
           </tr>
         </thead>
         <tbody>
@@ -142,21 +104,83 @@
               <select class="form-select" aria-label="select example">
                 <option value="+">+</option>
                 <option value="-">-</option>
+                <option value="i">İzinli</option>
+                <option value="h">Hasta</option>
               </select>
             </td>
           </tr>
-          
+        </tbody>
+      </table>
+    </div>
+    <button id="attendanceButton" class="btn btn-primary">Yoklamayı Kaydet</button>
+  </section>
+
+  <!-- LİST WİTH ATTENDANCE ID PAGE -->
+  <section id="listWithAttendanceId" class="container page">
+    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+      <option selected>Lütfen Listelemek İstedğiniz Vakti Seçiniz...</option>
+      <option value="1">20/09/2022 Sabah</option>
+      <option value="2">23/09/2022 Öğle</option>
+    </select>
+    <div class="studentList  table-responsive">
+      <table id="studentListTable" class="table table-hover">
+        <thead class="table-secondary">
+          <tr>
+            <th>Talebe NO</th>
+            <th>Talebe Adı</th>
+            <th>Talebe Soyadı</th>
+            <th>Yoklama Sonucu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Ali</td>
+            <td>Yılmaz</td>
+            <td>Var</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Ali</td>
+            <td>Yılmaz</td>
+            <td>Yok</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- LİST WİTH ATTENDANCE ID PAGE -->
-  <section id="listWithAttendanceId" class="container page"></section>
-
   <!-- LİST WİTH STUDENT ID PAGE -->
-  <section id="listWithStudentId" class="container page"></section>
-
+  <section id="listWithStudentId" class="container page">
+    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+      <option selected>Lütfen Yoklama Sonuçlarını Öğrenmek İstediğiniz Talebeyi Seçiniz....</option>
+      <option value="1">1 - Ali Yılmaz</option>
+      <option value="2">2 - Ali Yılmaz</option>
+    </select>
+    <div class="studentList  table-responsive">
+      <table id="studentListTable" class="table table-hover">
+        <thead class="table-secondary">
+          <tr>
+            <th>Tarih</th>
+            <th>Vakit</th>
+            <th>Yoklama Sonucu</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>20/09/2022</td>
+            <td>Sabah</td>
+            <td>Var</td>
+          </tr>
+          <tr>
+            <td>23/09/2022</td>
+            <td>Öğle</td>
+            <td>Yok</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </body>
-
 </html>
