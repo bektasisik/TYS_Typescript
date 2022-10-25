@@ -8,3 +8,11 @@ alert("Talebe eklendi: " + fullname);
 
 import { StudentService } from "./service/StudentService";
 import { AttendanceService } from "./service/AttendanceService";
+
+const studentUi = document.getElementById("studentUi");
+const studentSection = document.getElementById("studentSection");
+
+
+let sss = new StudentService();
+let saaass = new AttendanceService();
+

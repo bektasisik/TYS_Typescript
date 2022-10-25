@@ -11,25 +11,26 @@
   <link rel="stylesheet" href="./static/css/style.css" />
   <script src="./static/bundle/script.js" defer></script>
   <script src="/src/index.ts"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 </head>
 
 <body>
   <header class="header">
     <nav class="navbar">
-      <a href="#">
-        <img src="./assets/logo_transparent_old.png" width="75px" alt="logo">
-      </a>
-      <a href="index.html">
+      <a href="#" class="logo">
+        <img src="./assets/logo_transparent_old.png" alt="logo" />
       </a>
       <div class="title">TALEBE YOKLAMA SİSTEMİ</div>
       <div class="navbar-links">
         <ul>
-          <li class="menu"><a href="/public/pages/studentMenu.html" target="iframe-menu" >Talebe İşlemleri</a></li>
-          <li class="menu"><a href="#">Yoklama İşlemleri</a>
+          <li class="menu"><a href="#studentSection" id="studentUi">Talebe İşlemleri</a></li>
+          <li class="menu">
+            <a href="#">Yoklama İşlemleri</a>
             <div class="acilir-menu">
-              <a href="pages/attendance/takeAttendance.html" target="iframe-menu">Yoklama Al</a>
-              <a href="pages/attendance/listWithAttendanceId.html" target="iframe-menu">Vakite Göre Yoklama Listele</a>
-              <a href="pages/attendance/listWithStudentId.html" target="iframe-menu">Talebeye Göre Yoklama Listele</a>
+              <a href="#takeAttendance">Yoklama Al</a>
+              <a href="#listWithAttendanceID">Vakite Göre Yoklama Listele</a>
+              <a href="#listWithStudentId">Talebeye Göre Yoklama Listele</a>
             </div>
           </li>
         </ul>
@@ -37,8 +38,125 @@
     </nav>
   </header>
 
+  <section id="home" class="page container">  </section>
   
- 
+  <!-- STUDENT CRUD PAGE -->
+  <section id="studentSection" class="page container">
+    <form id="add-student">
+      <div>
+        <label for="name">Talebenin Adı: </label>
+        <input type="text" name="name" id="name" class="name" />
+      </div>
+      <div>
+        <label for="surname">Talebenin Soyadı:</label>
+        <input type="text" name="surname" id="surname" class="surname" />
+      </div>
+      <div>
+        <input type="submit" value="Ekle" class="addStudentButton" id="addStudentButton" />
+      </div>
+    </form>
+    <div class="studentList  table-responsive">
+      <table id="studentListTable" class="table table-hover">
+        <thead class="table-secondary">
+          <tr>
+            <th>Talebe NO</th>
+            <th>Talebe Adı</th>
+            <th>Talebe Soyadı</th>
+            <th>İşlemler</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Ali</td>
+            <td>Yılmaz</td>
+            <td>
+              <button><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-trash" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg></button>
+              <button class="updateStudentButton"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                  fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                  <path
+                    d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                </svg></button>
+            </td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Ali</td>
+            <td>Yılmaz</td>
+            <td>
+              <button><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                  class="bi bi-trash" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                  <path fill-rule="evenodd"
+                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                </svg></button>
+              <button class="updateStudentButton"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                  fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                  <path
+                    d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                </svg></button>
+            </td>
+          </tr>
+          
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAKE ATTENDANCE PAGE -->
+  <section id="takeAttendance" class="page container">
+    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+      <option selected>Lütfen Yoklama Almak İstedğiniz Vakti Seçiniz...</option>
+      <option value="1">Sabah</option>
+      <option value="2">Öğle</option>
+      <option value="3">İkindi</option>
+      <option value="4">Akşam</option>
+      <option value="5">Yatsı</option>
+    </select>
+    <div class="studentList  table-responsive">
+      <table id="studentListTable" class="table table-hover">
+        <thead class="table-secondary">
+          <tr>
+            <th>Talebe NO</th>
+            <th>Talebe Adı</th>
+            <th>Talebe Soyadı</th>
+            <th>+/-</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Ali</td>
+            <td>Yılmaz</td>
+            <td>
+              <select class="form-select" aria-label="select example">
+                <option value="+">+</option>
+                <option value="-">-</option>
+              </select>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- LİST WİTH ATTENDANCE ID PAGE -->
+  <section id="listWithAttendanceId" class="container page"></section>
+
+  <!-- LİST WİTH STUDENT ID PAGE -->
+  <section id="listWithStudentId" class="container page"></section>
 
 </body>
+
 </html>

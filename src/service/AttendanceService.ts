@@ -43,9 +43,3 @@ export class AttendanceService {
         });
     }
 }
-function getAttendancesByAttendanceId(attendanceId: any, number: any) {
-    throw new Error("Function not implemented.");
-}
-function getAttendancesByStudentId(studentId: any, number: any) {
-    throw new Error("Function not implemented.");
-}
