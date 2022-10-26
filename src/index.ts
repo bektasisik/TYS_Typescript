@@ -4,39 +4,49 @@ import { AttendanceService } from "./service/AttendanceService";
 const studentService = new StudentService();
 const attendanceService = new AttendanceService();
 
-addStudent();
-/* function addStudent() {
-  const name = document.getElementById("name") as HTMLInputElement;
-  const surname = document.getElementById("surname") as HTMLInputElement;
-  studentService.addStudent(name.value, surname.value);
-  addStudentList();
-} */
 
+addStudent();
+
+/**
+ * Öğrenci ekleme
+ */
 function addStudent() {
   const name = document.getElementById("name") as HTMLInputElement;
   const surname = document.getElementById("surname") as HTMLInputElement;
   const addButton = document.getElementById("addButton") as HTMLButtonElement;
   addButton.addEventListener("click", () => {
     const fullname = name.value + " " + surname.value;
+
     studentService.addStudent(name.value, surname.value);
-    console.log("Talebe eklendi: " + fullname);
     name.value = "";
     surname.value = "";
     console.log(studentService.getStudents());
+
     addStudentList();
+    alert("Talebe eklendi: " + fullname);
+
   });
 }
-function removeAllChildNodes(parent: HTMLDivElement) {
+
+/**
+ * Öğrenci listesini temizleme
+ * @param element
+ * @returns
+ * @see https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+ * @param parent
+ */
+function removeAllChildNodes(parent: HTMLTableSectionElement) {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
   }
 }
+
 function addStudentList() {
-  console.log("addStudentList");
   const tbodyList = document.getElementById("studentListBody") as HTMLTableSectionElement;
   removeAllChildNodes(tbodyList);
   const students = studentService.getStudents();
   for (let index = 0; index < students.length; index++) {
+    
     const tr = document.createElement("tr");
     const tdId = document.createElement("td");
     const tdName = document.createElement("td");
@@ -55,16 +65,10 @@ function addStudentList() {
 
     deletebutton.addEventListener("click", () => {
       studentService.deleteStudent(students[index].id);
-      alert("Silme işlemi gerçekleşti");
-      alert(students[index].id);//indexi alıyoruz sil tusuna basınca ekrana yazdırıyoruz ama alt satırda galiba silme yapımıyor
+      alert("Silme işlemi gerçekleşti.");
       deleteStudent(students[index].id);
     });
 
-    // deletebutton.addEventListener("click", () => {
-    //   deleteStudent(students[index].id);
-    //   studentService.deleteStudent(students[index].id);
-    //   alert("Silme işlemi gerçekleşti");
-    // });
     updatebutton.addEventListener("click", () => {
       const name = document.getElementById("name") as HTMLInputElement;
       const surname = document.getElementById("surname") as HTMLInputElement;
@@ -73,11 +77,9 @@ function addStudentList() {
       name.value = students[index].name;
       surname.value = students[index].surname;
       addButton.addEventListener("click", () => {
-        const fullname = name.value + " " + surname.value;
         studentService.updateStudent(students[index].id, name.value, surname.value);
-        updateStudent(students[index].id);
         alert("Güncelleme işlemi gerçekleşti");
-
+        addStudentList();
       });
     });
 
@@ -91,16 +93,45 @@ function addStudentList() {
 
     tbodyList.appendChild(tr);
   }
+  showStudentListForAttendance();
 }
 function deleteStudent(id: number) {
-  const tbodyList = document.getElementById("studentListBody") as HTMLTableSectionElement;
-  const tr = document.getElementById("tr") as HTMLTableRowElement;
-  tbodyList.removeChild(tr);
+  studentService.deleteStudent(id);
   addStudentList();
 }
-function updateStudent(id: number) {
-  const tbodyList = document.getElementById("studentListBody") as HTMLTableSectionElement;
-  const tr = document.getElementById("tr") as HTMLTableRowElement;
-  tbodyList.removeChild(tr);
-  addStudentList();
+
+function showStudentListForAttendance() {
+  const tbodyListForAttendance = document.getElementById("takeAttendanceBody") as HTMLTableSectionElement;
+  removeAllChildNodes(tbodyListForAttendance);
+  const students = studentService.getStudents();
+  for (let index = 0; index < students.length; index++) {
+    const tr = document.createElement("tr");
+    const tdId = document.createElement("td");
+    const tdName = document.createElement("td");
+    const tdSurname = document.createElement("td");
+    const tdOption = document.createElement("td");
+    const select = document.createElement("select");
+    const option1 = document.createElement("option");
+    const option2 = document.createElement("option");
+
+    tdId.innerHTML = students[index].id.toString();
+    tdName.innerText = students[index].name;
+    tdSurname.innerText = students[index].surname;
+    select.setAttribute("class", "form-select");
+    select.setAttribute("aria-label", "select example");
+    option1.setAttribute("value", "+");
+    option2.setAttribute("value", "-");
+    option1.innerText = "+";
+    option2.innerText = "-";
+    select.appendChild(option1);
+    select.appendChild(option2);
+    tdOption.appendChild(select);
+
+    tr.appendChild(tdId);
+    tr.appendChild(tdName);
+    tr.appendChild(tdSurname);
+    tr.appendChild(tdOption);
+
+    tbodyListForAttendance.appendChild(tr);
+  }
 }

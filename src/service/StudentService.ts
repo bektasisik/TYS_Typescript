@@ -17,12 +17,12 @@ export class StudentService {
     }
 
     updateStudent(studentId: number, name: string, surname: string) {
-        let student = this.getStudent(studentId);
-        student.setName(name);
-        student.setSurname(surname);
-    }
-    deleteStudent(studentId: number) {
-        this._students.splice(studentId);
+        const student = this.getStudent(studentId);
+        student.name = name;
+        student.surname = surname;
     }
 
+    deleteStudent(studentId: number) {
+        this._students = this._students.filter(student => student.id !== studentId);
+    }
 }

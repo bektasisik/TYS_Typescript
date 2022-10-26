@@ -2,7 +2,7 @@ export class Student {
     id: number;
     name: string;
     surname: string;
-    absent: number ;
+    absent: number;
 
     constructor(id: number, name: string, surname: string) {
         this.id = id;
