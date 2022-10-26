@@ -6,8 +6,8 @@ export class AttendanceService {
     attendances!: Array<Attendance>;
     studentAttendances!: Array<StudentAttendance>;
     sequence: number = 1;
-
-    getAttendances(): Array<Attendance> {
+    
+    getAttendanceList(): Array<Attendance> {
         return this.attendances;
     }
 
@@ -27,18 +27,16 @@ export class AttendanceService {
             (studentAttendance) => studentAttendance.getStudent().id === studentId
         );
     }
-
     takeAttendance(prayerTime: string, attendanceMap: Map<Student, Boolean>) {
-        let attendance = new Attendance(this.sequence++, prayerTime);
+        const attendance = new Attendance(this.sequence++, prayerTime);
         this.attendances.push(attendance);
-
         attendanceMap.forEach((isAbsence, student) => {
-            let studentAttendance = new StudentAttendance(
+            const studentAttendance = new StudentAttendance(
                 student,
                 attendance,
                 isAbsence
             );
-            student.increaseAbsent();
+            studentAttendance.getStudent().increaseAbsent();
             this.studentAttendances.push(studentAttendance);
         });
     }

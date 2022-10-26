@@ -8,6 +8,10 @@ export class StudentService {
         const student = new Student(this._sequence++, name, surname)
         this._students.push(student);
     }
+    addAbsent(studentId: number) {
+        const student = this.getStudent(studentId);
+        student.increaseAbsent();
+    }
 
     getStudents(): Array<Student> {
         return this._students;
@@ -24,5 +28,10 @@ export class StudentService {
 
     deleteStudent(studentId: number) {
         this._students = this._students.filter(student => student.id !== studentId);
+    }
+
+    takeAttendance(studentId: number, isAbsence: boolean) {
+        const student = this.getStudent(studentId);
+        student.increaseAbsent();
     }
 }

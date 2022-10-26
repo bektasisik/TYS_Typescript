@@ -1,39 +1,36 @@
 import { StudentService } from "./service/StudentService";
 import { AttendanceService } from "./service/AttendanceService";
+import { Student } from "./domain/Student";
+
 
 const studentService = new StudentService();
 const attendanceService = new AttendanceService();
 
-
+// Student Service
 addStudent();
-
 /**
  * Öğrenci ekleme
+ * @see https://www.w3schools.com/jsref/met_document_getelementbyid.asp
  */
 function addStudent() {
   const name = document.getElementById("name") as HTMLInputElement;
   const surname = document.getElementById("surname") as HTMLInputElement;
   const addButton = document.getElementById("addButton") as HTMLButtonElement;
-  addButton.addEventListener("click", () => {
-    const fullname = name.value + " " + surname.value;
-
+  addButton.addEventListener("click", (e) => {
+    e.preventDefault();
     studentService.addStudent(name.value, surname.value);
     name.value = "";
     surname.value = "";
+    debugger;
     console.log(studentService.getStudents());
 
     addStudentList();
-    alert("Talebe eklendi: " + fullname);
-
   });
 }
-
 /**
  * Öğrenci listesini temizleme
- * @param element
- * @returns
- * @see https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
  * @param parent
+ * @see https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
  */
 function removeAllChildNodes(parent: HTMLTableSectionElement) {
   while (parent.firstChild) {
@@ -41,12 +38,17 @@ function removeAllChildNodes(parent: HTMLTableSectionElement) {
   }
 }
 
+/**
+ * Öğrenci listesini ekrana yazdırma (tabloda)
+ * @see https://www.w3schools.com/jsref/met_document_createelement.asp
+ * @see https://www.w3schools.com/jsref/met_node_appendchild.asp
+*/
 function addStudentList() {
   const tbodyList = document.getElementById("studentListBody") as HTMLTableSectionElement;
   removeAllChildNodes(tbodyList);
   const students = studentService.getStudents();
   for (let index = 0; index < students.length; index++) {
-    
+
     const tr = document.createElement("tr");
     const tdId = document.createElement("td");
     const tdName = document.createElement("td");
@@ -65,24 +67,26 @@ function addStudentList() {
 
     deletebutton.addEventListener("click", () => {
       studentService.deleteStudent(students[index].id);
-      alert("Silme işlemi gerçekleşti.");
-      deleteStudent(students[index].id);
+      addStudentList();
     });
+    // updatebutton.addEventListener("click", () => {
+    //   const name = document.getElementById("name") as HTMLInputElement;
+    //   const surname = document.getElementById("surname") as HTMLInputElement;
+    //   const addButton = document.getElementById("addButton") as HTMLButtonElement;
+    //   const updateButton = document.getElementById("updateButton") as HTMLButtonElement;
+    //   name.value = students[index].name;
+    //   surname.value = students[index].surname;
+    //   addButton.style.display = "none";
+    //   updateButton.style.display = "block";
+    //   updateButton.addEventListener("click", () => {
+    //     updateStudent(students[index].id, name.value, surname.value);
+    //     name.value = "";
+    //     surname.value = "";
+    //     addButton.style.display = "block";
+    //     updateButton.style.display = "none";
 
-    updatebutton.addEventListener("click", () => {
-      const name = document.getElementById("name") as HTMLInputElement;
-      const surname = document.getElementById("surname") as HTMLInputElement;
-      const addButton = document.getElementById("addButton") as HTMLButtonElement;
-      addButton.innerHTML = "Güncelle";
-      name.value = students[index].name;
-      surname.value = students[index].surname;
-      addButton.addEventListener("click", () => {
-        studentService.updateStudent(students[index].id, name.value, surname.value);
-        alert("Güncelleme işlemi gerçekleşti");
-        addStudentList();
-      });
-    });
-
+    //   });
+    // });
     tr.appendChild(tdId);
     tr.appendChild(tdName);
     tr.appendChild(tdSurname);
@@ -95,11 +99,18 @@ function addStudentList() {
   }
   showStudentListForAttendance();
 }
-function deleteStudent(id: number) {
-  studentService.deleteStudent(id);
-  addStudentList();
-}
+// function updateStudent(id: number, name: string, surname: string) {
+//   studentService.updateStudent(id, name, surname);
+//   addStudentList();
+// }
 
+/**
+ * Attendance Service
+ */
+
+/**
+ * Seçilen öğrencileri yoklama listesine ekleme
+ */
 function showStudentListForAttendance() {
   const tbodyListForAttendance = document.getElementById("takeAttendanceBody") as HTMLTableSectionElement;
   removeAllChildNodes(tbodyListForAttendance);
@@ -134,4 +145,47 @@ function showStudentListForAttendance() {
 
     tbodyListForAttendance.appendChild(tr);
   }
+}
+const takeAttendanceButton = document.getElementById("takeAttendanceButton") as HTMLButtonElement;
+takeAttendanceButton.addEventListener("click", () => {
+  const selectList = document.getElementsByTagName("select");
+  const students = studentService.getStudents();
+  for (let index = 0; index < students.length; index++) {
+    if (selectList[index].value === "+") {
+      studentService.takeAttendance(students[index].id, true);
+    } else {
+      studentService.takeAttendance(students[index].id, false);
+    }
+  }
+  console.log(attendanceService.getAttendanceList());
+  addStudentList();
+});
+
+/**
+ * Yoklama alma (tablodan) 
+ * @see https://www.w3schools.com/jsref/met_document_getelementsbyclassname.asp
+ * @see https://www.w3schools.com/jsref/prop_select_value.asp
+ * @see https://www.w3schools.com/jsref/prop_select_selectedindex.asp
+ */
+function takeAttendance() {
+  const students = studentService.getStudents() as Student[];
+  const selectPraterTime = document.getElementById("selectPrayerTime");
+
+  const tbodyListForAttendance = document.getElementById("takeAttendanceBody") as HTMLTableSectionElement;
+  const trs = tbodyListForAttendance.getElementsByTagName("tr");
+
+  for (let index = 0; index < trs.length; index++) {
+    const tds = trs[index].getElementsByTagName("td");
+    const select = tds[3].getElementsByTagName("select")[0];
+    const value = select.value;
+    const id = parseInt(tds[0].innerHTML);
+    const student = students.find((student) => student.id === id);
+    if (student) {
+      if (value === "-") {
+        student.absent++;
+      }
+    }
+  }
+  showStudentListForAttendance();
+  addStudentList();
 }

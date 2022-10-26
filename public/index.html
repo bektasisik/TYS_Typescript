@@ -39,10 +39,10 @@
     </nav>
   </header>
 
-  <section id="home" class="page container">  </section>
+  <section id="home" class="page container"></section>
 
   <!-- STUDENT CRUD PAGE -->  
-  <section id="studentSection" class="page container">
+  <section id="studentSection" class="page container img">
     <form id="add-student" >
       <div>
         <label for="name">Talebenin Adı: </label>
@@ -75,7 +75,7 @@
 
   <!-- TAKE ATTENDANCE PAGE -->
   <section id="takeAttendance" class="page container">
-    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+    <select id="selectPrayerTime" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
       <option selected>Lütfen Yoklama Almak İstedğiniz Vakti Seçiniz...</option>
       <option value="1">Sabah</option>
       <option value="2">Öğle</option>
@@ -97,10 +97,10 @@
         </tbody>
       </table>
     </div>
-    <button id="attendanceButton" class="btn btn-primary">Yoklamayı Kaydet</button>
+    <button id="takeAttendanceButton" class="btn btn-primary">Yoklamayı Kaydet</button>
   </section>
 
-  <!-- LİST WİTH ATTENDANCE ID PAGE -->
+  <!-- LİST WİTH ATTENDANCEID PAGE -->
   <section id="listWithAttendanceId" class="container page">
     <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
       <option selected>Lütfen Listelemek İstedğiniz Vakti Seçiniz...</option>
@@ -135,7 +135,7 @@
     </div>
   </section>
 
-  <!-- LİST WİTH STUDENT ID PAGE -->
+  <!-- LİST WİTH STUDENTID PAGE -->
   <section id="listWithStudentId" class="container page">
     <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
       <option selected>Lütfen Yoklama Sonuçlarını Öğrenmek İstediğiniz Talebeyi Seçiniz....</option>
