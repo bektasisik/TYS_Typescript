@@ -502,3 +502,54 @@ takeAttendance(student: Student, prayerTime: string, isAbsence: boolean) {
 //     }
 // }
 
+// mySelectAttendanceId.addEventListener("change", () => {
+//  attendanceService.getAttendancesByAttendanceId(attendance.id).forEach((attendance) => {
+//  console.log(attendance.student.name + " " + attendance.student.surname + " " + attendance.attendance);
+// });
+
+
+   /*  getStudents = async () => {
+        const response = await fetch('http://localhost:3002/api/students');
+        const data = await response.json();
+        return data;
+    }
+    
+    addStudent = async (name: string, surname: string) => {
+        const student = new Student(this._sequence++, name, surname)
+        this._students.push(student);
+        const response = await fetch('http://localhost:3002/api/students', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: name, surname: surname})
+        });
+        const data = await response.json();
+        return data;
+    }
+    
+    updateStudent = async (studentId: number, name: string, surname: string) => {
+        const response = await fetch('http://localhost:3002/api/students/' + studentId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: name, surname: surname})
+        });
+        const data = await response.json();
+        return data;
+    }
+    
+    deleteStudent = async (studentId: number) => {
+        const response = await fetch('http://localhost:3002/api/students/' + studentId, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+        return data;
+    }
+    
+    getStudent = async (studentId: number) => {
+        const response = await fetch('http://localhost:3002/api/students/' + studentId);
+        const data = await response.json();
+        return data;
+    } */

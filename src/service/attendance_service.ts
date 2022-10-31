@@ -1,6 +1,6 @@
-import {Student} from "../domain/Student";
-import {Attendance} from "../domain/Attendance";
-import {StudentAttendance} from "../domain/StudentAttendance";
+import {Student} from "../domain/student";
+import {Attendance} from "../domain/attendance";
+import {StudentAttendance} from "../domain/student_attendance";
 
 export class AttendanceService {
     attendances: Array<Attendance> = [];

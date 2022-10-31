@@ -8,3 +8,4 @@ node_modules
 /src/domain/StudentAttendance.js
 /src/service/StudentService.js
 /src/domain/Student.js
+src/service/eski.ts

@@ -3,7 +3,6 @@ import path from "path";
 const webpackConfig = () => ({
   mode: "production",
   entry: path.resolve(__dirname, "./src/index.ts"),
-  devtools: 'inline-source-map',
   module: {
     rules: [
       {

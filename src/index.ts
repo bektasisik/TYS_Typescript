@@ -1,7 +1,7 @@
-import { StudentService } from "./service/StudentService";
-import { AttendanceService } from "./service/AttendanceService";
-import { Student } from "./domain/Student";
-import { Attendance } from "./domain/Attendance";
+import { StudentService } from "./service/student_service";
+import { AttendanceService } from "./service/attendance_service";
+import { Student } from "./domain/student";
+import { Attendance } from "./domain/attendance";
 
 const studentService = new StudentService();
 const attendanceService = new AttendanceService();
@@ -168,10 +168,6 @@ function listWithAttendanceId() {
         option.setAttribute("value", attendance.id.toString());
         option.innerText = attendance.today + " " + attendance.prayerTime;
         selectListWithAttendanceId.appendChild(option);
-        // mySelectAttendanceId.addEventListener("change", () => {
-            
-        // attendanceService.getAttendancesByAttendanceId(attendance.id).forEach((attendance) => {
-        //     console.log(attendance.student.name + " " + attendance.student.surname + " " + attendance.attendance);
-        // });
+    
     });
 }
