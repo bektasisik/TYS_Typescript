@@ -195,3 +195,12 @@ form label {
   padding: 1rem;
   box-shadow: 0px 0px 17px -3px rgba(0, 0, 0, 0.75);
 }
+.updateStudentButton{
+  background-color: #f4d03f;
+  float: right;
+  display: none;
+}
+.addStudentButton{
+  background-color: #f4d03f;
+  float: right;
+}

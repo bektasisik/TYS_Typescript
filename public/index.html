@@ -10,8 +10,15 @@
   <title>TYS</title>
   <link rel="stylesheet" href="./static/css/style.css" />
   <script src="./static/bundle/script.js" defer></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" 
+    crossorigin="anonymous">
+  <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -41,19 +48,22 @@
 
   <section id="home" class="page container"></section>
 
-  <!-- STUDENT CRUD PAGE -->  
+  <!-- STUDENT CRUD PAGE -->
   <section id="studentSection" class="page container img">
-    <form id="add-student" >
+    <form id="add-student">
       <div>
-        <label for="name">Talebenin Adı: </label>
-        <input type="text" name="name" id="name" class="name" />
+        <label for="nameInput">Talebenin Adı: </label>
+        <input type="text" name="name" id="nameInput" class="name" />
       </div>
       <div>
-        <label for="surname">Talebenin Soyadı:</label>
-        <input type="text" name="surname" id="surname" class="surname" />
+        <label for="surnameInput">Talebenin Soyadı:</label>
+        <input type="text" name="surname" id="surnameInput" class="surname" />
       </div>
       <div>
-        <input type="submit" value="Ekle" class="addStudentButton" id="addButton"/>
+        <input type="submit" value="Ekle" class="addStudentButton" id="addStudentButton" />
+      </div>
+      <div>
+        <input type="submit" value="Güncelle" class="updateStudentButton" id="updateStudentButton" />
       </div>
     </form>
     <div class="studentList table-responsive">
@@ -76,15 +86,15 @@
   <!-- TAKE ATTENDANCE PAGE -->
   <section id="takeAttendance" class="page container">
     <select id="selectPrayerTime" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-      <option selected>Lütfen Yoklama Almak İstedğiniz Vakti Seçiniz...</option>
-      <option value="1">Sabah</option>
-      <option value="2">Öğle</option>
-      <option value="3">İkindi</option>
-      <option value="4">Akşam</option>
-      <option value="5">Yatsı</option>
+      <option selected disabled>Lütfen Yoklama Almak İstedğiniz Vakti Seçiniz...</option>
+      <option value="Sabah">Sabah</option>
+      <option value="Öğle">Öğle</option>
+      <option value="İkindi">İkindi</option>
+      <option value="Akşam">Akşam</option>
+      <option value="Yatsı">Yatsı</option>
     </select>
     <div class="studentList  table-responsive">
-      <table id="studentListTable" class="table table-hover">
+      <table id="studentListTable1" class="table table-hover">
         <thead class="table-secondary">
           <tr>
             <th>Talebe NO</th>
@@ -97,18 +107,17 @@
         </tbody>
       </table>
     </div>
+<!--    TODO seçili yoksa basamasın -->
     <button id="takeAttendanceButton" class="btn btn-primary">Yoklamayı Kaydet</button>
   </section>
 
-  <!-- LİST WİTH ATTENDANCEID PAGE -->
+  <!-- LİST WİTH ATTENDANCEID PAGE selectListWithAttendanceId-->
   <section id="listWithAttendanceId" class="container page">
-    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-      <option selected>Lütfen Listelemek İstedğiniz Vakti Seçiniz...</option>
-      <option value="1">20/09/2022 Sabah</option>
-      <option value="2">23/09/2022 Öğle</option>
+    <select id="selectListWithAttendanceId"  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+      <option selected disabled>Lütfen Listelemek İstedğiniz Vakti Seçiniz...</option>
     </select>
     <div class="studentList  table-responsive">
-      <table id="studentListTable" class="table table-hover">
+      <table id="studentListForAttendance" class="table table-hover">
         <thead class="table-secondary">
           <tr>
             <th>Talebe NO</th>
@@ -117,19 +126,7 @@
             <th>Yoklama Sonucu</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Ali</td>
-            <td>Yılmaz</td>
-            <td>Var</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Ali</td>
-            <td>Yılmaz</td>
-            <td>Yok</td>
-          </tr>
+        <tbody id="tbodyListForAttendance">
         </tbody>
       </table>
     </div>
@@ -137,35 +134,24 @@
 
   <!-- LİST WİTH STUDENTID PAGE -->
   <section id="listWithStudentId" class="container page">
-    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+    <select id="mySelectStudentId" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
       <option selected>Lütfen Yoklama Sonuçlarını Öğrenmek İstediğiniz Talebeyi Seçiniz....</option>
-      <option value="1">1 - Ali Yılmaz</option>
-      <option value="2">2 - Ali Yılmaz</option>
     </select>
     <div class="studentList  table-responsive">
-      <table id="studentListTable" class="table table-hover">
+      <table id="studentListTable3" class="table table-hover">
         <thead class="table-secondary">
           <tr>
             <th>Tarih</th>
             <th>Vakit</th>
             <th>Yoklama Sonucu</th>
-            
+
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>20/09/2022</td>
-            <td>Sabah</td>
-            <td>Var</td>
-          </tr>
-          <tr>
-            <td>23/09/2022</td>
-            <td>Öğle</td>
-            <td>Yok</td>
-          </tr>
+        <tbody id="tbodyListWithStudentId">
         </tbody>
       </table>
     </div>
   </section>
 </body>
+
 </html>
