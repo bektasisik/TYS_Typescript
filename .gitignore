@@ -2,3 +2,10 @@
 node_modules
 
 .vscode
+/.idea
+/src/domain/Attendance.js
+/src/service/AttendanceService.js
+/src/domain/StudentAttendance.js
+/src/service/StudentService.js
+/src/domain/Student.js
+/src/service/eski.ts

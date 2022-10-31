@@ -1,0 +1,11 @@
+{
+  "students": [
+    {{# repeat (queryParam 'total' '5') }}
+    {
+      "name": "{{ faker 'name.firstName' }}",
+      "surname": "{{ faker 'name.lastName' }}",
+
+    },
+    {{/ repeat }}
+  ]
+}
