@@ -509,7 +509,7 @@ takeAttendance(student: Student, prayerTime: string, isAbsence: boolean) {
 
 
    /*  getStudents = async () => {
-        const response = await fetch('http://localhost:3002/api/students');
+        const response = await fetch('http://localhost:3002/students');
         const data = await response.json();
         return data;
     }
@@ -517,7 +517,7 @@ takeAttendance(student: Student, prayerTime: string, isAbsence: boolean) {
     addStudent = async (name: string, surname: string) => {
         const student = new Student(this._sequence++, name, surname)
         this._students.push(student);
-        const response = await fetch('http://localhost:3002/api/students', {
+        const response = await fetch('http://localhost:3002/students', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -529,7 +529,7 @@ takeAttendance(student: Student, prayerTime: string, isAbsence: boolean) {
     }
     
     updateStudent = async (studentId: number, name: string, surname: string) => {
-        const response = await fetch('http://localhost:3002/api/students/' + studentId, {
+        const response = await fetch('http://localhost:3002/students/' + studentId, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -541,7 +541,7 @@ takeAttendance(student: Student, prayerTime: string, isAbsence: boolean) {
     }
     
     deleteStudent = async (studentId: number) => {
-        const response = await fetch('http://localhost:3002/api/students/' + studentId, {
+        const response = await fetch('http://localhost:3002/students/' + studentId, {
             method: 'DELETE'
         });
         const data = await response.json();
@@ -549,7 +549,7 @@ takeAttendance(student: Student, prayerTime: string, isAbsence: boolean) {
     }
     
     getStudent = async (studentId: number) => {
-        const response = await fetch('http://localhost:3002/api/students/' + studentId);
+        const response = await fetch('http://localhost:3002/students/' + studentId);
         const data = await response.json();
         return data;
     } */
