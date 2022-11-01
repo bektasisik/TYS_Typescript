@@ -11,7 +11,7 @@ export class StudentService {
         this.getStudents();
     }
 
-    async getStudents() : Promise<Array<Student>> {
+    async getStudents(): Promise<Student[]> {
         const response = await fetch(apiUrl + '/students', {
             method: 'GET',
             headers: {
@@ -23,24 +23,21 @@ export class StudentService {
             throw new Error(`Error! status: ${response.status}`);
         }
         const result = (await response.json());
-        const getResult = <Student[]>JSON.parse(JSON.stringify(result, null, 4));
-
-        this._students = getResult as Array<Student>;
-
-        console.log(result);
+        this._students = <Student[]>JSON.parse(JSON.stringify(result));
         return this._students;
     }
 
 
     async addStudent(name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students', {
+        const response = await fetch(apiUrl + '/students' + '/' + name + '/' + surname, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 name: name,
-                surname: surname
+                surname: surname,
+                absent: 0
             }),
         });
 
@@ -49,8 +46,9 @@ export class StudentService {
         }
 
         const result = await response.json();
-        console.log('result is: ', JSON.stringify(result, null, 4));
-        return result;
+        console.log('result is: ', JSON.stringify(result));
+        const student = new Student(this._sequence, name, surname);
+        this._students.push(student);
     }
 
 
@@ -67,7 +65,7 @@ export class StudentService {
     }
 
     async updateStudent(studentId: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + studentId, {
+        const response = await fetch(apiUrl + '/students/' + studentId + '/' + name + '/' + surname, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
@@ -85,12 +83,16 @@ export class StudentService {
         }
 
         const result = await response.json();
-
-        console.log('result is: ', JSON.stringify(result, null, 4));
+        console.log('result is: ', JSON.stringify(result));
+        const student = this.getStudent(studentId);
+        if (student) {
+            student.setName(name);
+            student.setSurname(surname);
+        }
     }
 
     async deleteStudent(studentId: number) {
-        const response = await fetch(apiUrl + '/students/1', {
+        const response = await fetch(apiUrl + '/students/' + studentId, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
@@ -104,6 +106,8 @@ export class StudentService {
 
         const result = await response.json();
 
-        console.log('result is: ', JSON.stringify(result, null, 4));
+        console.log('result is: ', JSON.stringify(result));
+        const students = this._students.filter(student => student.id !== studentId);
+        this._students = students;
     }
 }

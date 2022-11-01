@@ -27,15 +27,16 @@ let selectedStudent: Student;
 showLists();
 
 addStudentButton.addEventListener("click", async (e) => {
+  e.preventDefault();
   console.log("Ekleme");
   await studentService.addStudent(nameInput.value, surnameInput.value);
   nameInput.value = "";
   surnameInput.value = "";
   showLists();
-  e.preventDefault();
 });
 
 updateStudentButton.addEventListener("click", async (e) => {
+  console.log("Güncelleme");
   await studentService.updateStudent(selectedStudent.id, nameInput.value, surnameInput.value);
   nameInput.value = "";
   surnameInput.value = "";
@@ -46,6 +47,7 @@ updateStudentButton.addEventListener("click", async (e) => {
 });
 
 takeAttendanceButton.addEventListener("click", async (e) => {
+  console.log("Yoklama alma");
   const map = new Map();
  (await studentService.getStudents()).forEach((student: Student, index: number) => {
     map.set(student, selectList[index].value === "+");
@@ -61,16 +63,16 @@ takeAttendanceButton.addEventListener("click", async (e) => {
 
 
 function showLists() {
+
   showStudentList();
   showAttendanceList();
 }
-
 /**
  * Öğrenci listesini ekrana yazdırma (tabloda)
  */
  async function showStudentList() {
   studentTable.innerHTML = "";
-   (await studentService.getStudents()).forEach((student: Student) => {
+  (await studentService.getStudents()).forEach((student: Student) => {
     const tr = document.createElement("tr");
     const tdId = document.createElement("td");
     const tdName = document.createElement("td");
@@ -107,6 +109,7 @@ function showLists() {
     studentTable.appendChild(tr);
 
     deleteButton.addEventListener("click" , () => {
+      console.log("Silme");
       studentService.deleteStudent(Number(deleteButton.dataset.id));
       showLists();
     });
