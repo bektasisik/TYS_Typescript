@@ -204,3 +204,12 @@ form label {
   background-color: #f4d03f;
   float: right;
 }
+
+.takeAttendanceButton{
+  background-color: #f4d03f;
+}
+.updateAttendanceButton{
+  background-color: #f4d03f;
+  float: left;
+  display: none;
+}

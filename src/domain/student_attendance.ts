@@ -18,8 +18,8 @@ export class StudentAttendance {
         return this.student;
     }
 
-    getIsAbsenceToString(isAbsence: boolean): string {
-        return isAbsence ? "Var" : "Yok";
+    getIsAbsenceToString(): string {
+        return this.isAbsence ? "Var" : "Yok";
     }
 
     showInfoStudentAttendance() {

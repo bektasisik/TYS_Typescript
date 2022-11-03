@@ -6,10 +6,9 @@ var apiUrl: string = 'http://localhost:3002/api/v1';
 export class StudentService {
     private _students: Array<Student> = [];
     private _sequence: number = 0;
-    
+
 
     constructor() {
-        this.fetchStudents();
     }
 
     async fetchStudents(): Promise<Student[]> {
@@ -25,6 +24,7 @@ export class StudentService {
         }
         const result = (await response.json());
         this._students = <Student[]>JSON.parse(JSON.stringify(result));
+        this._sequence = this._students.length;
         return this._students;
     }
 
@@ -32,32 +32,8 @@ export class StudentService {
         return this._students;
     }
 
-    async increaseAbsent(studentId: number) {
-        const response = await fetch(apiUrl + '/students/' + studentId + '/absent', {   
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: studentId,
-                absen: 1
-             })
-        });
-
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const student = this.getStudent(studentId);
-        if (student) {
-            student.absent = result.absent;
-        }
-    }
-
     async addStudent(name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + this._sequence + '/' + name + '/' + surname, {
+        const response = await fetch(apiUrl + '/students', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +57,7 @@ export class StudentService {
     }
 
     async addStudentWithId(id: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + id + '/' + name + '/' + surname, {
+        const response = await fetch(apiUrl + '/students', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,15 +96,14 @@ export class StudentService {
         return this._students.find(student => student.id === studentId);
     }
 
-    async updateStudent(studentId: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + studentId + '/' + name + '/' + surname, {
+    async updateStudent(student: Student, name: string, surname: string) {
+        const response = await fetch(apiUrl + '/students/' + student.id, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: studentId,
                 name: name,
                 surname: surname
             }),
@@ -140,38 +115,8 @@ export class StudentService {
 
         const result = await response.json();
         console.log('result is: ', JSON.stringify(result));
-        const student = this.getStudent(studentId);
-        if (student) {
-            student.setName(name);
-            student.setSurname(surname);
-        }
-    }
-
-    async updateStudentWithId(studentId: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + studentId + '/' + name + '/' + surname, {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: studentId,
-                name: name,
-                surname: surname
-            }),
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const student = this.getStudent(studentId);
-        if (student) {
-            student.setName(name);
-            student.setSurname(surname);
-        }
+        student.name = name;
+        student.surname = surname;
     }
 
     async deleteStudent(studentId: number) {
