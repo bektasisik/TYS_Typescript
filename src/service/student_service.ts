@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 var apiUrl: string = 'http://localhost:3002/api/v1';
 
 export class StudentService {
-    private _students: Array<Student> = [];
+    private _students: Student[] = [];
     private _sequence: number = 0;
 
 
@@ -23,7 +23,9 @@ export class StudentService {
             throw new Error(`Error! status: ${response.status}`);
         }
         const result = (await response.json());
-        this._students = <Student[]>JSON.parse(JSON.stringify(result));
+        result.forEach((object: any) => {
+            this._students.push(new Student(object.id, object.name, object.surname));
+        });
         this._sequence = this._students.length;
         return this._students;
     }
@@ -53,30 +55,6 @@ export class StudentService {
         const result = await response.json();
         console.log('result is: ', JSON.stringify(result));
         const student = new Student(this._sequence, name, surname);
-        this._students.push(student);
-    }
-
-    async addStudentWithId(id: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: id,
-                name: name,
-                surname: surname,
-                absent: 0
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const student = new Student(id, name, surname);
         this._students.push(student);
     }
 

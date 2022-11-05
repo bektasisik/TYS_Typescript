@@ -23,7 +23,7 @@ export class AttendanceService {
     }
 
     async getAttendancesByAttendanceId(attendanceId: number): Promise<Array<StudentAttendance>> {
-        const response = await fetch(apiUrl + '/attendance/' + attendanceId, {
+        const response = await fetch(apiUrl + '/attendances/' + attendanceId, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -41,7 +41,7 @@ export class AttendanceService {
     }
 
     async getAttendancesByStudentId(studentId: number): Promise<Array<StudentAttendance>> {
-        const response = await fetch(apiUrl + '/attendance/' + studentId, {
+        const response = await fetch(apiUrl + '/attendances/' + studentId, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -58,7 +58,15 @@ export class AttendanceService {
     }
 
     async takeAttendance(prayerTime: string, attendanceMap: Map<Student, boolean>) {
-        const response = await fetch(apiUrl + '/attendance', {
+        const attendance = new Attendance(this._sequence++, prayerTime);
+        attendanceMap.forEach(async (isAbsence, student) => {
+            const studentAttendance = new StudentAttendance(student, attendance, isAbsence);
+            if (!isAbsence) {
+                student.increaseAbsent();
+            }
+            this._studentAttendances.push(studentAttendance);
+        });
+        const response = await fetch(apiUrl + '/attendances', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -76,19 +84,25 @@ export class AttendanceService {
 
         const result = await response.json();
         console.log('result is: ', JSON.stringify(result));
-        const attendance = new Attendance(this._sequence++, prayerTime);
         this._attendances.push(attendance);
-        attendanceMap.forEach((isAbsence, student) => {
-            const studentAttendance = new StudentAttendance(student, attendance, isAbsence);
-            if (!isAbsence) {
-                student.increaseAbsent();
-            }
-            this._studentAttendances.push(studentAttendance);
-        });
     }
 
     async updateAttendance(attendanceId: number, prayerTime: string, attendanceMap: Map<Student, boolean>) {
-        const response = await fetch(apiUrl + '/attendance/' + attendanceId, {
+        const attendance = this.getAttendance(attendanceId);
+
+        if (attendance) {
+            attendance.prayerTime = prayerTime;
+            this._studentAttendances = this._studentAttendances.filter(
+                (studentAttendance) => studentAttendance.getAttendance().id !== attendanceId);
+            attendanceMap.forEach(async (isAbsence, student) => {
+                const studentAttendance = new StudentAttendance(student, attendance, isAbsence);
+                if (!isAbsence) {
+                    student.increaseAbsent();
+                }
+                this._studentAttendances.push(studentAttendance);
+            });
+        }
+        const response = await fetch(apiUrl + '/attendances/' + attendanceId, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -99,21 +113,21 @@ export class AttendanceService {
                 attendanceMap: attendanceMap
             })
         });
-        
-        const attendance = this.getAttendance(attendanceId);
-        if (attendance) {
-            attendance.prayerTime = prayerTime;
-            attendanceMap.forEach((isAbsence, student) => {
-                const studentAttendance = new StudentAttendance(student, attendance, isAbsence);
-                if (!isAbsence) {
-                    student.increaseAbsent();
-                }
-                this._studentAttendances.push(studentAttendance);
-            });
+
+        if (!response.ok) {
+            throw new Error(response.statusText);
         }
     }
+    
     async deleteAttendance(attendanceId: number) {
-        const response  = await fetch(apiUrl + '/attendance/' + attendanceId, {
+        const attendance = this.getAttendance(attendanceId);
+        if (attendance) {
+            this._attendances = this._attendances.filter(
+                (attendance) => attendance.id !== attendanceId);
+            this._studentAttendances = this._studentAttendances.filter(
+                (studentAttendance) => studentAttendance.getAttendance().id !== attendanceId);
+        }
+        const response = await fetch(apiUrl + '/attendances/' + attendanceId, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -122,12 +136,9 @@ export class AttendanceService {
                 id: attendanceId
             })
         });
-        const attendance = this.getAttendance(attendanceId);
-        if (attendance) {
-            this._attendances = this._attendances.filter(
-                (attendance) => attendance.id !== attendanceId);
-            this._studentAttendances = this._studentAttendances.filter(
-                (studentAttendance) => studentAttendance.getAttendance().id !== attendanceId);
+
+        if (!response.ok) {
+            throw new Error(response.statusText);
         }
     }
 }

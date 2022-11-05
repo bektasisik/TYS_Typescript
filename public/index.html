@@ -41,7 +41,7 @@
     </nav>
   </header>
 
-  <section id="home" class="page container"></section>
+  <section id="home" class="home container"></section>
 
   <!-- STUDENT CRUD PAGE -->
   <section id="studentSection" class="page container img">
@@ -81,7 +81,7 @@
   <!-- TAKE ATTENDANCE PAGE -->
   <section id="takeAttendance" class="page container">
     <select id="selectPrayerTime" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-      <option selected disabled>Lütfen Yoklama Almak İstedğiniz Vakti Seçiniz...</option>
+      <option value="" hidden>Lütfen Yoklama Almak İstedğiniz Vakti Seçiniz...</option>
       <option value="Sabah">Sabah</option>
       <option value="Öğle">Öğle</option>
       <option value="İkindi">İkindi</option>
@@ -106,9 +106,9 @@
     <!--    TODO seçili yoksa basamasın -->
     <form class="button-center">
       <div>
-      <input type="submit" value="Yoklama Al" class="takeAttendanceButton" id="takeAttendanceButton" />
-      <input type="submit" value="Güncelle" class="updateAttendanceButton" id="updateAttendanceButton" />
-    </div>
+        <input type="submit" value="Yoklama Al" class="takeAttendanceButton" id="takeAttendanceButton" />
+        <input type="submit" value="Güncelle" class="updateAttendanceButton" id="updateAttendanceButton" />
+      </div>
     </form>
     <div class="studentList table table-responsive">
       <table id="attandanceListTable" class="table table-hover">
@@ -124,15 +124,13 @@
         </tbody>
       </table>
     </div>
-
-    
   </section>
 
   <!-- LİST WİTH ATTENDANCEID PAGE selectListWithAttendanceId-->
   <section id="listWithAttendanceId" class="container page">
     <select id="selectListWithAttendanceId" class="form-select form-select-lg mb-3"
       aria-label=".form-select-lg example">
-      <option selected disabled>Lütfen Listelemek İstedğiniz Vakti Seçiniz...</option>
+      <option disabled disabled>Lütfen Listelemek İstedğiniz Vakti Seçiniz...</option>
     </select>
     <div class="studentList  table-responsive">
       <table id="studentListForAttendance" class="table table-hover">
