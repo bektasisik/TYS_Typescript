@@ -28,8 +28,6 @@ studentService.fetchStudents().then(() => {
     showLists();
 });
 
-var regName = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{3,20}$/;
-var regSurname = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{2,20}$/;
 let selectedStudent: Student;
 let selectedAttendanceId: number;
 
@@ -37,13 +35,13 @@ let selectedAttendanceId: number;
 addStudentButton.addEventListener("click", async (e) => {
     e.preventDefault();
     console.log("Ekleme");
-    if (regName.test(nameInput.value) && regSurname.test(surnameInput.value)) {
+    try {
         await studentService.addStudent(nameInput.value, surnameInput.value);
         showLists();
         alert(nameInput.value + " " + surnameInput.value + "\nÖğrenci Eklendi");
         nameInput.value = "";
         surnameInput.value = "";
-    } else {
+    } catch {
         alert("Talebe ADI ve SOYADI uygun formatta değil\n3-20 karakter arası sadece harf giriniz\nÖrnek: Bektaş Işık");
     }
 });
@@ -51,7 +49,7 @@ addStudentButton.addEventListener("click", async (e) => {
 updateStudentButton.addEventListener("click", async (e) => {
     e.preventDefault();
     console.log("Güncelleme");
-    if (regName.test(nameInput.value) && regSurname.test(surnameInput.value)) {
+    try {
         await studentService.updateStudent(selectedStudent, nameInput.value, surnameInput.value);
         nameInput.value = "";
         surnameInput.value = "";
@@ -59,7 +57,7 @@ updateStudentButton.addEventListener("click", async (e) => {
         updateStudentButton.style.display = "none";
         showLists();
         alert("Öğrenci Güncellendi");
-    } else {
+    } catch {
         alert("Talebe ADI ve SOYADI uygun formatta değil\n3-20 karakter arası sadece harf giriniz\nÖrnek: Bektaş Işık");
     }
 });
@@ -71,14 +69,15 @@ takeAttendanceButton.addEventListener("click", async (e) => {
     studentService.getStudents().forEach((student: Student, index: number) => {
         map.set(student, selectList[index].value === "+");
     });
-    if (!(selectPrayerTime.value === "")) {
+    try {
         await attendanceService.takeAttendance(selectPrayerTime.value, map);
         showLists();
+        listAttendanceForStudents();
+        listStudentsForAttendance();
         alert(selectPrayerTime.value + " Yoklaması Alındı");
-    } else {
+    } catch {
         alert("Lütfen Vakti Seçiniz");
     }
-
 });
 
 updateAttendanceButton.addEventListener("click", async (e) => {
@@ -93,29 +92,39 @@ updateAttendanceButton.addEventListener("click", async (e) => {
     takeAttendanceButton.style.display = "block";
     updateAttendanceButton.style.display = "none";
     showLists();
+    listAttendanceForStudents();
+    listStudentsForAttendance();
     alert(selectPrayerTime.value + "Yoklaması Güncellendi");
 });
 
 mySelectAttendanceId.addEventListener("click", (e) => {
     e.preventDefault();
-    console.log("Yoklama Seçildi");
-    listStudentsWithAttendanceId(Number(mySelectAttendanceId.value));
-    alert("Seçilen Yoklamanın Öğrencileri Listelendi");
+    if (!(mySelectAttendanceId.value === "")) {
+        console.log("Yoklama Seçildi");
+        listStudentsWithAttendanceId(Number(mySelectAttendanceId.value));
+        alert("Seçilen Yoklamanın Öğrencileri Listelendi");
+    }
+    else {
+        alert("Yoklama Listeniz Boş. Lütfen Yoklama Alınız...");
+    }
 });
 
 mySelectStudentId.addEventListener("click", (e) => {
     e.preventDefault();
-    console.log("Talebe Seçildi");
-    listAttendanceWithStudentId(Number(mySelectStudentId.value));
-    alert("Seçilen Öğrencinin Yoklamaları Listelendi");
+    if (!(mySelectStudentId.value === "")) {
+        console.log("Talebe Seçildi");
+        listAttendanceWithStudentId(Number(mySelectStudentId.value));
+        alert("Seçilen Öğrencinin Yoklamaları Listelendi");
+    }
+    else {
+        alert("Yoklama Listeniz Boş. Lütfen Yoklama Alınız...");
+    }
 });
 
 
 function showLists() {
     showStudentList();
     showAttendanceList();
-    listAttendanceForStudents();
-    listStudentsForAttendance();
     listAttendance();
 }
 
@@ -248,7 +257,8 @@ async function listAttendance() {
             console.log("Silme");
             await attendanceService.deleteAttendance(Number(deleteButton.dataset.id));
             showLists();
-            listAttendance();
+            listAttendanceForStudents();
+            listStudentsForAttendance();
             alert("Yoklama Silindi");
         });
         updateButton.addEventListener("click", (e) => {

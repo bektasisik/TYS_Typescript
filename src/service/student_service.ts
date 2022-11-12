@@ -1,7 +1,10 @@
 import { Student } from "../domain/student";
 import fetch from 'node-fetch';
+import { validate } from "schema-utils";
 
-var apiUrl: string = 'http://localhost:3002/api/v1';
+var apiUrl: string = 'http://localhost:3000/api/v1';
+var regName = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{3,20}$/;
+var regSurname = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{2,20}$/;
 
 export class StudentService {
     private _students: Student[] = [];
@@ -24,7 +27,7 @@ export class StudentService {
         }
         const result = (await response.json());
         result.forEach((object: any) => {
-            this._students.push(new Student(object.id, object.name, object.surname));
+            this._students.push(new Student(Number.parseInt(object.id), object.name, object.surname));
         });
         this._sequence = this._students.length;
         return this._students;
@@ -35,6 +38,7 @@ export class StudentService {
     }
 
     async addStudent(name: string, surname: string) {
+        this.validateStudent(name, surname);
         const response = await fetch(apiUrl + '/students', {
             method: 'POST',
             headers: {
@@ -58,23 +62,8 @@ export class StudentService {
         this._students.push(student);
     }
 
-    getStudent(studentId: number): Student | undefined {
-        window.fetch(apiUrl + '/students/' + studentId, {
-            method: 'GET'
-        })
-            .then(response => response.json())
-            .then(json => {
-                console.log(json);
-            }
-            );
-        return this._students.find(student => student.id === studentId);
-    }
-
-    getStudentById(studentId: number): Student | undefined {
-        return this._students.find(student => student.id === studentId);
-    }
-
     async updateStudent(student: Student, name: string, surname: string) {
+        this.validateStudent(name, surname);
         const response = await fetch(apiUrl + '/students/' + student.id, {
             method: 'PUT',
             headers: {
@@ -97,6 +86,17 @@ export class StudentService {
         student.surname = surname;
     }
 
+    validateStudent(name: string, surname: string) {
+        if (!(this.isValid(name, surname))) {
+            throw new Error("Name or surname is not valid");
+        }
+    }
+
+    isValid(name: string, surname: string): boolean {
+        return regName.test(name) && regSurname.test(surname);
+    }
+
+
     async deleteStudent(studentId: number) {
         const response = await fetch(apiUrl + '/students/' + studentId, {
             method: 'DELETE',
@@ -105,13 +105,10 @@ export class StudentService {
                 'Content-Type': 'application/json',
             },
         });
-
         if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
         }
-
         const result = await response.json();
-
         console.log('result is: ', JSON.stringify(result));
         const students = this._students.filter(student => student.id !== studentId);
         this._students = students;

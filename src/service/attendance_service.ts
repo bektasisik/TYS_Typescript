@@ -2,7 +2,7 @@ import { Student } from "../domain/student";
 import { Attendance } from "../domain/attendance";
 import { StudentAttendance } from "../domain/student_attendance";
 
-var apiUrl: string = 'http://localhost:3002/api/v1';
+var apiUrl: string = 'http://localhost:3000/api/v1';
 
 export class AttendanceService {
     private _attendances: Array<Attendance> = [];
@@ -57,7 +57,17 @@ export class AttendanceService {
             (studentAttendance) => studentAttendance.getStudent().id === studentId);
     }
 
+    isEmpty(prayerTime: string): boolean {
+        if (prayerTime === undefined || prayerTime === null || prayerTime === '') {
+            return false;
+        }
+        return true;
+    }
+
     async takeAttendance(prayerTime: string, attendanceMap: Map<Student, boolean>) {
+        if (!this.isEmpty(prayerTime)) {
+            throw new Error('Prayer time cannot be empty!');
+        }
         const attendance = new Attendance(this._sequence++, prayerTime);
         attendanceMap.forEach(async (isAbsence, student) => {
             const studentAttendance = new StudentAttendance(student, attendance, isAbsence);
@@ -89,19 +99,38 @@ export class AttendanceService {
 
     async updateAttendance(attendanceId: number, prayerTime: string, attendanceMap: Map<Student, boolean>) {
         const attendance = this.getAttendance(attendanceId);
+        attendance.prayerTime = prayerTime;
 
-        if (attendance) {
-            attendance.prayerTime = prayerTime;
-            this._studentAttendances = this._studentAttendances.filter(
-                (studentAttendance) => studentAttendance.getAttendance().id !== attendanceId);
-            attendanceMap.forEach(async (isAbsence, student) => {
-                const studentAttendance = new StudentAttendance(student, attendance, isAbsence);
-                if (!isAbsence) {
-                    student.increaseAbsent();
+        let oldAttendance = this._studentAttendances.filter(
+            (studentAttendance) => studentAttendance.getAttendance().id === attendanceId);
+
+        this._studentAttendances = this._studentAttendances.filter(
+            (studentAttendance) => studentAttendance.getAttendance().id !== attendanceId);
+
+        attendanceMap.forEach(async (isAbsence, student) => {
+            const studentAttendance = new StudentAttendance(student, attendance, isAbsence);
+            if (!isAbsence) {
+                student.increaseAbsent();
+            }
+            this._studentAttendances.push(studentAttendance);
+        });
+        const newAttendances = this._studentAttendances.filter(
+            (studentAttendance) => studentAttendance.getAttendance().id === attendanceId);
+
+        oldAttendance.forEach((oldStudentAttendance) => {
+            const newAttendance = newAttendances.find(
+                (newStudentAttendance) => (newStudentAttendance.getStudent().id === oldStudentAttendance.getStudent().id));
+            if (newAttendance) {
+                if (oldStudentAttendance.isAbsence !== newAttendance.isAbsence) {
+                    if (oldStudentAttendance.isAbsence) {
+                        newAttendance.getStudent().increaseAbsent();
+                    } else {
+                        newAttendance.getStudent().decreaseAbsent();
+                    }
                 }
-                this._studentAttendances.push(studentAttendance);
-            });
-        }
+            }
+        });
+
         const response = await fetch(apiUrl + '/attendances/' + attendanceId, {
             method: 'PUT',
             headers: {
@@ -118,15 +147,22 @@ export class AttendanceService {
             throw new Error(response.statusText);
         }
     }
-    
+
     async deleteAttendance(attendanceId: number) {
         const attendance = this.getAttendance(attendanceId);
         if (attendance) {
+            this._studentAttendances.forEach((studentAttendance) => {
+                if (!studentAttendance.isAbsence) {
+                    studentAttendance.getStudent().decreaseAbsent();
+                }
+            });
             this._attendances = this._attendances.filter(
                 (attendance) => attendance.id !== attendanceId);
             this._studentAttendances = this._studentAttendances.filter(
                 (studentAttendance) => studentAttendance.getAttendance().id !== attendanceId);
+
         }
+
         const response = await fetch(apiUrl + '/attendances/' + attendanceId, {
             method: 'DELETE',
             headers: {
