@@ -1,15 +1,17 @@
 import { Student } from "../domain/student";
 import fetch from 'node-fetch';
+import { validate } from "schema-utils";
 
-var apiUrl: string = 'http://localhost:3002/api/v1';
+var apiUrl: string = 'http://localhost:3000/api/v1';
+var regName = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{3,20}$/;
+var regSurname = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{2,20}$/;
 
 export class StudentService {
-    private _students: Array<Student> = [];
+    private _students: Student[] = [];
     private _sequence: number = 0;
-    
+
 
     constructor() {
-        this.fetchStudents();
     }
 
     async fetchStudents(): Promise<Student[]> {
@@ -24,7 +26,10 @@ export class StudentService {
             throw new Error(`Error! status: ${response.status}`);
         }
         const result = (await response.json());
-        this._students = <Student[]>JSON.parse(JSON.stringify(result));
+        result.forEach((object: any) => {
+            this._students.push(new Student(Number.parseInt(object.id), object.name, object.surname));
+        });
+        this._sequence = this._students.length;
         return this._students;
     }
 
@@ -32,32 +37,9 @@ export class StudentService {
         return this._students;
     }
 
-    async increaseAbsent(studentId: number) {
-        const response = await fetch(apiUrl + '/students/' + studentId + '/absent', {   
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: studentId,
-                absen: 1
-             })
-        });
-
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const student = this.getStudent(studentId);
-        if (student) {
-            student.absent = result.absent;
-        }
-    }
-
     async addStudent(name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + this._sequence + '/' + name + '/' + surname, {
+        this.validateStudent(name, surname);
+        const response = await fetch(apiUrl + '/students', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -80,55 +62,15 @@ export class StudentService {
         this._students.push(student);
     }
 
-    async addStudentWithId(id: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + id + '/' + name + '/' + surname, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: id,
-                name: name,
-                surname: surname,
-                absent: 0
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const student = new Student(id, name, surname);
-        this._students.push(student);
-    }
-
-    getStudent(studentId: number): Student | undefined {
-        window.fetch(apiUrl + '/students/' + studentId, {
-            method: 'GET'
-        })
-            .then(response => response.json())
-            .then(json => {
-                console.log(json);
-            }
-            );
-        return this._students.find(student => student.id === studentId);
-    }
-
-    getStudentById(studentId: number): Student | undefined {
-        return this._students.find(student => student.id === studentId);
-    }
-
-    async updateStudent(studentId: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + studentId + '/' + name + '/' + surname, {
+    async updateStudent(student: Student, name: string, surname: string) {
+        this.validateStudent(name, surname);
+        const response = await fetch(apiUrl + '/students/' + student.id, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: studentId,
                 name: name,
                 surname: surname
             }),
@@ -140,39 +82,20 @@ export class StudentService {
 
         const result = await response.json();
         console.log('result is: ', JSON.stringify(result));
-        const student = this.getStudent(studentId);
-        if (student) {
-            student.setName(name);
-            student.setSurname(surname);
+        student.name = name;
+        student.surname = surname;
+    }
+
+    validateStudent(name: string, surname: string) {
+        if (!(this.isValid(name, surname))) {
+            throw new Error("Name or surname is not valid");
         }
     }
 
-    async updateStudentWithId(studentId: number, name: string, surname: string) {
-        const response = await fetch(apiUrl + '/students/' + studentId + '/' + name + '/' + surname, {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: studentId,
-                name: name,
-                surname: surname
-            }),
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const student = this.getStudent(studentId);
-        if (student) {
-            student.setName(name);
-            student.setSurname(surname);
-        }
+    isValid(name: string, surname: string): boolean {
+        return regName.test(name) && regSurname.test(surname);
     }
+
 
     async deleteStudent(studentId: number) {
         const response = await fetch(apiUrl + '/students/' + studentId, {
@@ -182,13 +105,10 @@ export class StudentService {
                 'Content-Type': 'application/json',
             },
         });
-
         if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
         }
-
         const result = await response.json();
-
         console.log('result is: ', JSON.stringify(result));
         const students = this._students.filter(student => student.id !== studentId);
         this._students = students;

@@ -1,4 +1,5 @@
 export class Student {
+ 
     id: number;
     name: string;
     surname: string;
@@ -12,6 +13,10 @@ export class Student {
     }
     increaseAbsent() {
         this.absent = this.absent + 1;
+    }
+
+    decreaseAbsent() {
+        this.absent = this.absent - 1;
     }
 
     setName(name: string) {
