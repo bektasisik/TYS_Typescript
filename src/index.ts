@@ -1,6 +1,10 @@
+import { Student } from "./domain/student";
+import { Attendance } from "./domain/attendance";
+
 import { StudentService } from "./service/student_service";
 import { AttendanceService } from "./service/attendance_service";
-import { Student } from "./domain/student";
+
+import { StudentAttendanceDTO } from "./domain/student_attendance_dto";
 
 const studentService = new StudentService();
 const attendanceService = new AttendanceService();
@@ -24,9 +28,9 @@ const listAttendanceBody = document.getElementById("listAttendanceBody") as HTML
 const tbodyListForAttendance = document.getElementById("tbodyListForAttendance") as HTMLTableSectionElement;
 const tbodyListWithStudentId = document.getElementById("tbodyListWithStudentId") as HTMLTableSectionElement;
 
-studentService.fetchStudents().then(() => {
-    showLists();
-});
+showLists();
+listAttendancesForStudents();
+listStudentsForAttendance();
 
 let selectedStudent: Student;
 let selectedAttendanceId: number;
@@ -65,16 +69,17 @@ updateStudentButton.addEventListener("click", async (e) => {
 takeAttendanceButton.addEventListener("click", async (e) => {
     e.preventDefault();
     console.log("Yoklama alma");
-    const map = new Map();
-    studentService.getStudents().forEach((student: Student, index: number) => {
-        map.set(student, selectList[index].value === "+");
+    let studentAttendanceDto = new Array<StudentAttendanceDTO>();
+    (await studentService.getStudents()).forEach((student: Student, index: number) => {
+        studentAttendanceDto.push(new StudentAttendanceDTO(student.getId(), selectList[index].value === "+"));
     });
     try {
-        await attendanceService.takeAttendance(selectPrayerTime.value, map);
-        showLists();
-        listAttendanceForStudents();
-        listStudentsForAttendance();
-        alert(selectPrayerTime.value + " Yoklaması Alındı");
+        await attendanceService.takeAttendance(selectPrayerTime.value, studentAttendanceDto).then(() => {
+            showLists();
+            listAttendancesForStudents();
+            listStudentsForAttendance();
+            alert(selectPrayerTime.value + " Yoklaması Alındı");
+        });
     } catch {
         alert("Lütfen Vakti Seçiniz");
     }
@@ -83,17 +88,16 @@ takeAttendanceButton.addEventListener("click", async (e) => {
 updateAttendanceButton.addEventListener("click", async (e) => {
     e.preventDefault();
     console.log("Yoklama güncelleme");
-    const map = new Map();
-    studentService.getStudents().forEach((student: Student, index: number) => {
-        map.set(student, selectList[index].value === "+");
+    let studentAttendanceDto = new Array<StudentAttendanceDTO>();
+    (await studentService.getStudents()).forEach((student: Student, index: number) => {
+        studentAttendanceDto.push(new StudentAttendanceDTO(student.getId(), selectList[index].value === "+"));
     })
-    await attendanceService.updateAttendance(selectedAttendanceId, selectPrayerTime.value, map);
-    console.log(attendanceService.getAttendanceList());
+    await attendanceService.updateAttendance(selectedAttendanceId, selectPrayerTime.value, studentAttendanceDto);
+    showLists();
+    listAttendancesForStudents();
+    listStudentsForAttendance();
     takeAttendanceButton.style.display = "block";
     updateAttendanceButton.style.display = "none";
-    showLists();
-    listAttendanceForStudents();
-    listStudentsForAttendance();
     alert(selectPrayerTime.value + "Yoklaması Güncellendi");
 });
 
@@ -102,6 +106,7 @@ mySelectAttendanceId.addEventListener("click", (e) => {
     if (!(mySelectAttendanceId.value === "")) {
         console.log("Yoklama Seçildi");
         listStudentsWithAttendanceId(Number(mySelectAttendanceId.value));
+        listAttendancesForStudents();
         alert("Seçilen Yoklamanın Öğrencileri Listelendi");
     }
     else {
@@ -114,6 +119,7 @@ mySelectStudentId.addEventListener("click", (e) => {
     if (!(mySelectStudentId.value === "")) {
         console.log("Talebe Seçildi");
         listAttendanceWithStudentId(Number(mySelectStudentId.value));
+        listStudentsForAttendance();
         alert("Seçilen Öğrencinin Yoklamaları Listelendi");
     }
     else {
@@ -121,16 +127,15 @@ mySelectStudentId.addEventListener("click", (e) => {
     }
 });
 
-
 function showLists() {
     showStudentList();
-    showAttendanceList();
+    takeAttendanceList();
     listAttendance();
 }
 
 async function showStudentList() {
     studentTable.innerHTML = "";
-    studentService.getStudents().forEach((student: Student) => {
+    (await studentService.getStudents()).forEach((student: Student) => {
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -142,17 +147,17 @@ async function showStudentList() {
         const deleteButton = document.createElement("button");
         const updateButton = document.createElement("button");
 
-        tdId.innerHTML = student.id.toString();
-        tdName.innerText = student.name;
-        tdSurname.innerText = student.surname;
-        tdAbsent.innerText = student.absent.toString();
+        tdId.innerHTML = student.getId().toString();
+        tdName.innerText = student.getName();
+        tdSurname.innerText = student.getSurname();
+        tdAbsent.innerText = student.getAbsent().toString();
         deleteButton.setAttribute("class", "btn btn-danger");
         deleteButton.setAttribute("id", "deleteButton");
-        deleteButton.setAttribute("data-id", student.id.toString());
+        deleteButton.setAttribute("data-id", student.getId().toString());
         deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
         updateButton.setAttribute("class", "btn btn-primary");
         updateButton.setAttribute("id", "updateButton");
-        updateButton.setAttribute("data-id", student.id.toString());
+        updateButton.setAttribute("data-id", student.getId().toString());
         updateButton.innerHTML = '<i class="fa-solid fa-edit"></i>';
         tdDelete.appendChild(deleteButton);
         tdUpdate.appendChild(updateButton);
@@ -176,17 +181,19 @@ async function showStudentList() {
         updateButton.addEventListener("click", (e) => {
             e.preventDefault();
             selectedStudent = student;
-            nameInput.value = selectedStudent.name;
-            surnameInput.value = selectedStudent.surname;
+            nameInput.value = selectedStudent.getName();
+            surnameInput.value = selectedStudent.getSurname();
+            deleteButton.style.display = "none";
             addStudentButton.style.display = "none";
             updateStudentButton.style.display = "block";
-            updateStudentButton.setAttribute("data-id", selectedStudent.id.toString());
+            updateStudentButton.setAttribute("data-id", selectedStudent.getId().toString());
         });
     });
 }
-async function showAttendanceList() {
+
+async function takeAttendanceList() {
     takeAttendanceTable.innerHTML = "";
-    studentService.getStudents().forEach((student: { id: { toString: () => string; }; name: string; surname: string; }) => {
+    (await studentService.getStudents()).forEach((student: Student) => {
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -196,9 +203,9 @@ async function showAttendanceList() {
         const option1 = document.createElement("option");
         const option2 = document.createElement("option");
 
-        tdId.innerHTML = student.id.toString();
-        tdName.innerText = student.name;
-        tdSurname.innerText = student.surname;
+        tdId.innerHTML = student.getId().toString();
+        tdName.innerText = student.getName();
+        tdSurname.innerText = student.getSurname();
         select.setAttribute("class", "form-select");
         select.setAttribute("name", "selectAbsence");
         select.setAttribute("aria-label", "select example");
@@ -217,9 +224,11 @@ async function showAttendanceList() {
         takeAttendanceTable.appendChild(tr);
     });
 }
+
 async function listAttendance() {
     listAttendanceBody.innerHTML = "";
-    attendanceService.getAttendanceList().forEach((attendance) => {
+
+    (await attendanceService.getAttendances()).forEach((attendance: Attendance) => {
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdDate = document.createElement("td");
@@ -230,16 +239,16 @@ async function listAttendance() {
         const deleteButton = document.createElement("button");
         const updateButton = document.createElement("button");
 
-        tdId.innerHTML = attendance.id.toString();
-        tdDate.innerText = attendance.today;
-        tdPrayerTime.innerText = attendance.prayerTime;
+        tdId.innerHTML = attendance.getId().toString();
+        tdDate.innerText = attendance.getToday();
+        tdPrayerTime.innerText = attendance.getPrayerTime();
         deleteButton.setAttribute("class", "btn btn-danger");
         deleteButton.setAttribute("id", "deleteButton");
-        deleteButton.setAttribute("data-id", attendance.id.toString());
+        deleteButton.setAttribute("data-id", attendance.getId().toString());
         deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
         updateButton.setAttribute("class", "btn btn-primary");
         updateButton.setAttribute("id", "updateButton");
-        updateButton.setAttribute("data-id", attendance.id.toString());
+        updateButton.setAttribute("data-id", attendance.getId().toString());
         updateButton.innerHTML = '<i class="fa-solid fa-edit"></i>';
         tdDelete.appendChild(deleteButton);
         tdUpdate.appendChild(updateButton);
@@ -257,14 +266,15 @@ async function listAttendance() {
             console.log("Silme");
             await attendanceService.deleteAttendance(Number(deleteButton.dataset.id));
             showLists();
-            listAttendanceForStudents();
+            listAttendancesForStudents();
             listStudentsForAttendance();
             alert("Yoklama Silindi");
         });
         updateButton.addEventListener("click", (e) => {
             e.preventDefault();
-            selectedAttendanceId = attendance.id;
-            selectPrayerTime.value = attendance.prayerTime;
+            selectedAttendanceId = attendance.getId();
+            selectPrayerTime.value = attendance.getPrayerTime();
+            deleteButton.style.display = "none";
             updateAttendanceButton.style.display = "block";
             takeAttendanceButton.style.display = "none";
             updateAttendanceButton.setAttribute("data-id", selectedAttendanceId.toString());
@@ -273,18 +283,17 @@ async function listAttendance() {
 }
 
 /* Seçilen yoklama listesininin talebelerini gösterir. */
-function listAttendanceForStudents() {
-    const attendanceList = attendanceService.getAttendanceList();
+async function listAttendancesForStudents() {
     mySelectAttendanceId.innerHTML = "";
-    attendanceList.forEach((attendance) => {
+    const attendanceList = await attendanceService.getAttendances();
+    (await attendanceList).forEach((attendance) => {
         const option = document.createElement("option");
-        option.setAttribute("value", attendance.id.toString());
-        option.innerText = attendance.today + " " + attendance.prayerTime;
+        option.setAttribute("value", attendance.getId().toString());
+        option.innerText = attendance.getToday() + " " + attendance.getPrayerTime();
         mySelectAttendanceId.appendChild(option);
     });
 
 }
-
 
 async function listStudentsWithAttendanceId(attendanceId: number) {
     console.log("Yokalmaya göre Talebe Listeleme");
@@ -298,9 +307,9 @@ async function listStudentsWithAttendanceId(attendanceId: number) {
         const tdSurname = document.createElement("td");
         const tdAbsent = document.createElement("td");
 
-        tdId.innerHTML = studentAttendance.getStudent().id.toString();
-        tdName.innerHTML = studentAttendance.getStudent().name;
-        tdSurname.innerHTML = studentAttendance.getStudent().surname;
+        tdId.innerHTML = studentAttendance.getStudent().getId().toString();
+        tdName.innerHTML = studentAttendance.getStudent().getName();
+        tdSurname.innerHTML = studentAttendance.getStudent().getSurname();
         tdAbsent.innerHTML = studentAttendance.getIsAbsenceToString();
 
         tr.appendChild(tdId);
@@ -313,12 +322,12 @@ async function listStudentsWithAttendanceId(attendanceId: number) {
 
 /* Seçilen öğrencinin yoklama listesini gösterir. */
 async function listStudentsForAttendance() {
-    const studentList = studentService.getStudents();
+    const studentList = await studentService.getStudents();
     mySelectStudentId.innerHTML = "";
     studentList.forEach((student) => {
         const option = document.createElement("option");
-        option.setAttribute("value", student.id.toString());
-        option.innerText = student.name + " " + student.surname;
+        option.setAttribute("value", student.getId().toString());
+        option.innerText = student.getName() + " " + student.getSurname();
         mySelectStudentId.appendChild(option);
     });
 
@@ -335,8 +344,8 @@ async function listAttendanceWithStudentId(studentId: number) {
         const tdPrayerTime = document.createElement("td");
         const tdAbsent = document.createElement("td");
 
-        tdToday.innerHTML = studentAttendance.getAttendance().today;
-        tdPrayerTime.innerHTML = studentAttendance.getAttendance().prayerTime;
+        tdToday.innerHTML = studentAttendance.getAttendance().getToday();
+        tdPrayerTime.innerHTML = studentAttendance.getAttendance().getPrayerTime();
         tdAbsent.innerHTML = studentAttendance.getIsAbsenceToString();
 
         tr.appendChild(tdToday);

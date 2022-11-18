@@ -1,54 +1,56 @@
 import { Student } from "../domain/student";
 import fetch from 'node-fetch';
-import { validate } from "schema-utils";
 
-var apiUrl: string = 'http://localhost:3000/api/v1';
+var apiUrl: string = 'http://localhost:8080/api/v1/students';
 var regName = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{3,20}$/;
 var regSurname = /^[a-zA-ZğüşıöçĞÜŞİÖÇ ]{2,20}$/;
 
 export class StudentService {
     private _students: Student[] = [];
-    private _sequence: number = 0;
 
-
-    constructor() {
-    }
-
-    async fetchStudents(): Promise<Student[]> {
-        const response = await fetch(apiUrl + '/students', {
+    public async getStudents(): Promise<Student[]> {
+        const response = await fetch(apiUrl , {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
             },
         });
-
         if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
         }
         const result = (await response.json());
-        result.forEach((object: any) => {
-            this._students.push(new Student(Number.parseInt(object.id), object.name, object.surname));
+        this._students = [];
+        result.forEach((student: any) => {
+            this._students.push(new Student(student.id, student.name, student.surname, student.absent));
         });
-        this._sequence = this._students.length;
         return this._students;
     }
 
-    getStudents(): Array<Student> {
-        return this._students;
+    public async getStudent(id: number): Promise<Student> {
+        const response = await fetch(apiUrl + '/' + id, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        return new Student(result.id, result.name, result.surname, result.absent);
     }
 
-    async addStudent(name: string, surname: string) {
+    public async addStudent(name: string, surname: string) {
         this.validateStudent(name, surname);
-        const response = await fetch(apiUrl + '/students', {
+        const response = await fetch(apiUrl , {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id: this._sequence++,
                 name: name,
-                surname: surname,
-                absent: 0
+                surname: surname
             }),
         });
 
@@ -56,15 +58,11 @@ export class StudentService {
             throw new Error(`Error! status: ${response.status}`);
         }
 
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const student = new Student(this._sequence, name, surname);
-        this._students.push(student);
     }
 
-    async updateStudent(student: Student, name: string, surname: string) {
+    public async updateStudent(student: Student, name: string, surname: string) {
         this.validateStudent(name, surname);
-        const response = await fetch(apiUrl + '/students/' + student.id, {
+        const response = await fetch(apiUrl + '/' + student.getId(), {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
@@ -79,26 +77,21 @@ export class StudentService {
         if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
         }
-
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        student.name = name;
-        student.surname = surname;
     }
 
-    validateStudent(name: string, surname: string) {
+    public async validateStudent(name: string, surname: string): Promise<void> {
         if (!(this.isValid(name, surname))) {
             throw new Error("Name or surname is not valid");
         }
     }
 
-    isValid(name: string, surname: string): boolean {
+    public async isValid(name: string, surname: string): Promise<boolean> {
         return regName.test(name) && regSurname.test(surname);
     }
 
 
-    async deleteStudent(studentId: number) {
-        const response = await fetch(apiUrl + '/students/' + studentId, {
+    public async deleteStudent(studentId: number): Promise<void> {
+        const response = await fetch(apiUrl + '/' + studentId, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
@@ -108,29 +101,5 @@ export class StudentService {
         if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
         }
-        const result = await response.json();
-        console.log('result is: ', JSON.stringify(result));
-        const students = this._students.filter(student => student.id !== studentId);
-        this._students = students;
-    }
-
-    async deleteStudentWithId(studentId: number) {
-        const response = await fetch(apiUrl + '/students/' + studentId, {
-            method: 'DELETE',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        console.log('result is: ', JSON.stringify(result));
-        const students = this._students.filter(student => student.id !== studentId);
-        this._students = students;
     }
 }
