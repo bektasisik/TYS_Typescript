@@ -1,28 +1,32 @@
 import { Student } from "./student";
 import { Attendance } from "./attendance";
+
 export class StudentAttendance {
-    student: Student;
-    attendance: Attendance;
-    isAbsence: Boolean;
+    private _student: Student;
+    private _attendance: Attendance;
+    private _isAbsence: Boolean;
 
     constructor(student: Student, attendance: Attendance, isAbsence: Boolean) {
-        this.student = student;
-        this.attendance = attendance;
-        this.isAbsence = isAbsence;
+        this._student = student;
+        this._attendance = attendance;
+        this._isAbsence = isAbsence;
     }
 
-    getAttendance():Attendance{
-        return this.attendance;
+    public getAttendance():Attendance{
+        return this._attendance;
     }
-    getStudent():Student{
-        return this.student;
+    public getStudent():Student{
+        return this._student;
+    }
+    public getIsAbsence():Boolean{
+        return this._isAbsence;
     }
 
-    getIsAbsenceToString(): string {
-        return this.isAbsence ? "Var" : "Yok";
+    public getIsAbsenceToString(): string {
+        return this._isAbsence ? "Var" : "Yok";
     }
 
-    showInfoStudentAttendance() {
-        console.log(this.student + " " + this.attendance + " " + this.getIsAbsenceToString);
+    public showInfoStudentAttendance() {
+        console.log(this.getStudent() + " " + this.getAttendance() + " " + this.getIsAbsenceToString());
     }
 }
