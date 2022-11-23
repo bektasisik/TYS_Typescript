@@ -36,7 +36,7 @@ export class StudentService {
         });
         if (!response.ok) {
             throw new Error(`Error! status: ${response.status}`);
-        }/public/
+        }
         const result = await response.json();
         const getResult = <Student>JSON.parse(JSON.stringify(result));
         return new Student(getResult.getId(), getResult.getName(), getResult.getSurname(), getResult.getAbsent());

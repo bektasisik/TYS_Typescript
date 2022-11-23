@@ -27,7 +27,9 @@ export class StudentAttendanceService {
     }
 
     public async getStudentsByAttendanceId(attendanceId: number): Promise<StudentAttendance[]> {
-        const response = await fetch(apiUrl + '/' + attendanceId+ '/students', {
+        const response = await fetch(apiUrl + '/search/?' + new URLSearchParams({
+            attendanceId: attendanceId.toString()
+        }), {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -44,7 +46,9 @@ export class StudentAttendanceService {
     }
 
     public async getAttendancesByStudentId(studentId: number): Promise<StudentAttendance[]> {
-        const response = await fetch(apiUrl + '/' + studentId+ '/attendances', {
+        const response = await fetch(apiUrl + '/search/?' + new URLSearchParams({
+            studentId: studentId.toString()
+        }), {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
