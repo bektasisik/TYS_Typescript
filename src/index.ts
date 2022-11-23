@@ -1,13 +1,14 @@
 import { Student } from "./domain/student";
-import { Attendance } from "./domain/attendance";
 
 import { StudentService } from "./service/student_service";
 import { AttendanceService } from "./service/attendance_service";
+import { StudentAttendanceService } from "./service/student_attendance_service";
 
-import { StudentAttendanceDTO } from "./domain/student_attendance_dto";
+import { StudentAttendanceDTO } from "./dto/student_attendance_dto";
 
 const studentService = new StudentService();
 const attendanceService = new AttendanceService();
+const studentAttendanceservice = new StudentAttendanceService();
 
 const addStudentButton = document.getElementById("addStudentButton") as HTMLButtonElement;
 const updateStudentButton = document.getElementById("updateStudentButton") as HTMLButtonElement;
@@ -106,7 +107,6 @@ mySelectAttendanceId.addEventListener("click", (e) => {
     if (!(mySelectAttendanceId.value === "")) {
         console.log("Yoklama Seçildi");
         listStudentsWithAttendanceId(Number(mySelectAttendanceId.value));
-        listAttendancesForStudents();
         alert("Seçilen Yoklamanın Öğrencileri Listelendi");
     }
     else {
@@ -119,7 +119,6 @@ mySelectStudentId.addEventListener("click", (e) => {
     if (!(mySelectStudentId.value === "")) {
         console.log("Talebe Seçildi");
         listAttendanceWithStudentId(Number(mySelectStudentId.value));
-        listStudentsForAttendance();
         alert("Seçilen Öğrencinin Yoklamaları Listelendi");
     }
     else {
@@ -135,7 +134,7 @@ function showLists() {
 
 async function showStudentList() {
     studentTable.innerHTML = "";
-    (await studentService.getStudents()).forEach((student: Student) => {
+    (await studentService.getStudents()).forEach((student) => {
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -183,9 +182,10 @@ async function showStudentList() {
             selectedStudent = student;
             nameInput.value = selectedStudent.getName();
             surnameInput.value = selectedStudent.getSurname();
+            updateButton.style.display = "none";
             deleteButton.style.display = "none";
-            addStudentButton.style.display = "none";
             updateStudentButton.style.display = "block";
+            addStudentButton.style.display = "none";
             updateStudentButton.setAttribute("data-id", selectedStudent.getId().toString());
         });
     });
@@ -193,7 +193,7 @@ async function showStudentList() {
 
 async function takeAttendanceList() {
     takeAttendanceTable.innerHTML = "";
-    (await studentService.getStudents()).forEach((student: Student) => {
+    (await studentService.getStudents()).forEach((student) => {
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdName = document.createElement("td");
@@ -228,7 +228,7 @@ async function takeAttendanceList() {
 async function listAttendance() {
     listAttendanceBody.innerHTML = "";
 
-    (await attendanceService.getAttendances()).forEach((attendance: Attendance) => {
+    (await attendanceService.getAttendances()).forEach((attendance) => {
         const tr = document.createElement("tr");
         const tdId = document.createElement("td");
         const tdDate = document.createElement("td");
@@ -274,6 +274,7 @@ async function listAttendance() {
             e.preventDefault();
             selectedAttendanceId = attendance.getId();
             selectPrayerTime.value = attendance.getPrayerTime();
+            updateButton.style.display = "none";
             deleteButton.style.display = "none";
             updateAttendanceButton.style.display = "block";
             takeAttendanceButton.style.display = "none";
@@ -298,7 +299,7 @@ async function listAttendancesForStudents() {
 async function listStudentsWithAttendanceId(attendanceId: number) {
     console.log("Yokalmaya göre Talebe Listeleme");
     tbodyListForAttendance.innerHTML = "";
-    const studentAttendanceFilter = await attendanceService.getAttendancesByAttendanceId(attendanceId);
+    const studentAttendanceFilter = await studentAttendanceservice.getStudentsByAttendanceId(attendanceId);
     console.log(studentAttendanceFilter);
     studentAttendanceFilter.forEach((studentAttendance) => {
         const tr = document.createElement("tr");
@@ -336,7 +337,7 @@ async function listStudentsForAttendance() {
 async function listAttendanceWithStudentId(studentId: number) {
     console.log("Talebeye göre Yoklama Listeleme");
     tbodyListWithStudentId.innerHTML = "";
-    const studentAttendanceFilter = await attendanceService.getAttendancesByStudentId(studentId);
+    const studentAttendanceFilter = await studentAttendanceservice.getAttendancesByStudentId(studentId);
     console.log(studentAttendanceFilter);
     studentAttendanceFilter.forEach((studentAttendance) => {
         const tr = document.createElement("tr");

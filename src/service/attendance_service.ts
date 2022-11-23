@@ -1,14 +1,10 @@
 import { Attendance } from "../domain/attendance";
-import { Student } from "../domain/student";
-import { StudentAttendance } from "../domain/student_attendance";
-import { StudentAttendanceDTO } from "../domain/student_attendance_dto";
-import { StudentService } from "./student_service";
+import { StudentAttendanceDTO } from "../dto/student_attendance_dto";
 
 var apiUrl: string = 'http://localhost:8080/api/v1/attendances';
 
 export class AttendanceService {
     private _attendances: Array<Attendance> = [];
-    private _studentAttendances: Array<StudentAttendance> = [];
 
 
     public async getAttendances(): Promise<Attendance[]> {
@@ -41,70 +37,6 @@ export class AttendanceService {
         }
         const result = (await response.json());
         return new Attendance(result.id, result.prayerTime, result.date);
-    }
-
-    public async getStudentAttendances(): Promise<StudentAttendance[]> {
-        const response = await fetch(apiUrl + '/studentAttendances', {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-        const result = (await response.json());
-        this._studentAttendances = [];
-        this._studentAttendances = result.map((studentAttendance: any) => new StudentAttendance(
-            new Student(studentAttendance.student.id, studentAttendance.student.name, studentAttendance.student.surname, studentAttendance.student.absent),
-            new Attendance(studentAttendance.attendance.id, studentAttendance.attendance.prayerTime, studentAttendance.attendance.date),
-            studentAttendance.isAbsence));
-        return this._studentAttendances;
-    }
-
-
-
-    public async getAttendancesByAttendanceId(id: number): Promise<StudentAttendance[]> {
-        const response = await fetch(apiUrl + '/attendance/' + id, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-        const result: StudentAttendance[] = (await response.json());
-        const studentAttendances: StudentAttendance[] = [];
-        result.forEach((object: any) => {
-            studentAttendances.push(new StudentAttendance(
-                new Student(object.student.id, object.student.name, object.student.surname, object.student.absent),
-                new Attendance(object.attendance.id, object.attendance.prayerTime, object.attendance.date),
-                object.isAbsence));
-        });
-        return studentAttendances;
-    }
-
-    public async getAttendancesByStudentId(studentId: number): Promise<StudentAttendance[]> {
-        const response = await fetch(apiUrl + '/student/' + studentId, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`Error! status: ${response.status}`);
-        }
-        const result: StudentAttendance[] = (await response.json());
-        const studentAttendances: StudentAttendance[] = [];
-        result.forEach((object: any) => {
-            studentAttendances.push(new StudentAttendance(
-                new Student(object.student.id, object.student.name, object.student.surname, object.student.absent),
-                new Attendance(object.attendance.id, object.attendance.prayerTime, object.attendance.date),
-                object.isAbsence));
-        });
-        return studentAttendances;
     }
 
     public async isEmpty(prayerTime: string): Promise<boolean> {
