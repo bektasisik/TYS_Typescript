@@ -21,12 +21,7 @@ export class StudentAttendance {
     public getIsAbsence():Boolean{
         return this._isAbsence;
     }
-
     public getIsAbsenceToString(): string {
         return this._isAbsence ? "Var" : "Yok";
-    }
-
-    public showInfoStudentAttendance() {
-        console.log(this.getStudent() + " " + this.getAttendance() + " " + this.getIsAbsenceToString());
     }
 }
