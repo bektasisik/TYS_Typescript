@@ -13,9 +13,4 @@ export class StudentAttendanceDTO {
         this.studentId = studentId;
         this.isAbsence = isAbsence;
     }
-
-    public showInfoStudentAttendanceDTO() {
-        console.log(this.studentId + " " + this.isAbsence);
-    }
-
 }
