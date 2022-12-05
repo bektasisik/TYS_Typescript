@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#000000" />
   <title>TYS</title>
-  <link rel="stylesheet" href="./static/css/style.css" />
-  <script src="./static/bundle/script.js" defer></script>
+  <link rel="stylesheet" href="/public/static/css/style.css" />
+  <script src="/public/static/bundle/script.js" defer></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
@@ -20,152 +20,31 @@
 <body>
   <header class="header">
     <nav class="navbar">
-      <a href="#home" class="logo">
-        <img src="./assets/logo_transparent.png" alt="logo" />
-      </a>
-      <div class="title">TALEBE YOKLAMA SİSTEMİ</div>
-      <div class="navbar-links">
-        <ul>
-          <li class="menu">
-            <a href="#studentSection" id="studentUi">Talebe İşlemleri</a>
-          </li>
-          <li class="menu">
-            <a href="#takeAttendance">Yoklama İşlemleri</a>
-            <div class="acilir-menu">
-              <a href="#listWithAttendanceId">Vakite Göre Yoklama Listele</a>
-              <a href="#listWithStudentId">Talebeye Göre Yoklama Listele</a>
-            </div>
-          </li>
-        </ul>
-      </div>
+        <a id="homeUi" class="logo">
+            <img src="/public/assets/logo_transparent.png" alt="logo" />
+        </a>
+        <div class="title">TALEBE YOKLAMA SİSTEMİ</div>
+        <div class="navbar-links">
+            <ul>
+                <li class="menu">
+                  <a href="/src/pages/student-crud.html" id="studentUi">Talebe İşlemleri</a>
+                </li>
+                <li class="menu">
+                    <a href="/src/pages/attendance-crud.html" id="attendanceUi">Yoklama İşlemleri</a>
+                </li>
+                <li class="menu">
+                    <a>Listeleme İşlemleri</a>
+                    <div class="acilir-menu">
+                        <a href="/src/pages/list-by-attendance.html" id="attendanceListUi">Vakite Göre Yoklama Listele</a>
+                        <a href="/src/pages/list-by-student.html" id="studentListUi">Talebeye Göre Yoklama Listele</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </nav>
-  </header>
+</header>
 
   <section id="home" class="home container"></section>
-
-  <!-- STUDENT CRUD PAGE -->
-  <section id="studentSection" class="page container img">
-    <form id="add-student">
-      <div>
-        <label for="nameInput">Talebenin Adı: </label>
-        <input type="text" name="name" id="nameInput" class="name" />
-      </div>
-      <div>
-        <label for="surnameInput">Talebenin Soyadı:</label>
-        <input type="text" name="surname" id="surnameInput" class="surname" />
-      </div>
-      <div>
-        <input type="submit" value="Ekle" class="addStudentButton" id="addStudentButton" />
-      </div>
-      <div>
-        <input type="submit" value="Güncelle" class="updateStudentButton" id="updateStudentButton" />
-      </div>
-    </form>
-    <div class="studentList table-responsive">
-      <table id="studentListTable" class="table table-hover">
-        <thead class="table-secondary">
-          <tr>
-            <th>Talebe NO</th>
-            <th>Talebe Adı</th>
-            <th>Talebe Soyadı</th>
-            <th>Toplam Devamsızlık</th>
-            <th>İşlemler</th>
-          </tr>
-        </thead>
-        <tbody id="studentListBody">
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- TAKE ATTENDANCE PAGE -->
-  <section id="takeAttendance" class="page container">
-    <select id="selectPrayerTime" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-      <option value="" hidden>Lütfen Yoklama Almak İstedğiniz Vakti Seçiniz...</option>
-      <option value="Sabah">Sabah</option>
-      <option value="Öğle">Öğle</option>
-      <option value="İkindi">İkindi</option>
-      <option value="Akşam">Akşam</option>
-      <option value="Yatsı">Yatsı</option>
-    </select>
-    <div class="studentList table-responsive">
-      <table id="studentListTable1" class="table table-hover">
-        <thead class="table-secondary">
-          <tr>
-            <th>Talebe NO</th>
-            <th>Talebe Adı</th>
-            <th>Talebe Soyadı</th>
-            <th>+/-</th>
-          </tr>
-        </thead>
-        <tbody id="takeAttendanceBody">
-        </tbody>
-      </table>
-    </div>
-
-    <form class="button-center">
-      <div>
-        <input type="submit" value="Yoklama Al" class="takeAttendanceButton" id="takeAttendanceButton" />
-        <input type="submit" value="Güncelle" class="updateAttendanceButton" id="updateAttendanceButton" />
-      </div>
-    </form>
-    <div class="studentList table table-responsive">
-      <table id="attandanceListTable" class="table table-hover">
-        <thead class="table-secondary">
-          <tr>
-            <th>Yoklama No</th>
-            <th>Tarih</th>
-            <th>Vakit</th>
-            <th>İşlemler</th>
-          </tr>
-        </thead>
-        <tbody id="listAttendanceBody">
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- LİST WİTH ATTENDANCEID PAGE selectListWithAttendanceId-->
-  <section id="listWithAttendanceId" class="container page">
-    <select id="selectListWithAttendanceId" class="form-select form-select-lg mb-3"
-      aria-label=".form-select-lg example">
-      <option value="" selected disabled>Yoklama Listeniz Boş. Lütfen Yoklama Alınız...</option>
-    </select>
-    <div class="studentList  table-responsive">
-      <table id="studentListForAttendance" class="table table-hover">
-        <thead class="table-secondary">
-          <tr>
-            <th>Talebe NO</th>
-            <th>Talebe Adı</th>
-            <th>Talebe Soyadı</th>
-            <th>Yoklama Sonucu</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyListForAttendance">
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- LİST WİTH STUDENTID PAGE -->
-  <section id="listWithStudentId" class="container page">
-    <select id="mySelectStudentId" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-      <option value="" selected disabled>Yoklama Listeniz Boş. Lütfen Yoklama Alınız...</option>
-    </select>
-    <div class="studentList  table-responsive">
-      <table id="studentListTable3" class="table table-hover">
-        <thead class="table-secondary">
-          <tr>
-            <th>Tarih</th>
-            <th>Vakit</th>
-            <th>Yoklama Sonucu</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyListWithStudentId">
-        </tbody>
-      </table>
-    </div>
-  </section>
 </body>
 
 </html>
