@@ -1,9 +1,7 @@
 import { Student } from "./domain/student";
-
 import { StudentService } from "./service/student_service";
 import { AttendanceService } from "./service/attendance_service";
 import { StudentAttendanceService } from "./service/student_attendance_service";
-
 import { StudentAttendanceDTO } from "./dto/student_attendance_dto";
 
 const studentService = new StudentService();
@@ -19,7 +17,7 @@ const nameInput = document.getElementById("nameInput") as HTMLInputElement;
 const surnameInput = document.getElementById("surnameInput") as HTMLInputElement;
 
 const selectPrayerTime = document.getElementById("selectPrayerTime") as HTMLInputElement;
-const selectList = document.getElementsByName("selectAbsence") as NodeListOf<HTMLSelectElement>;
+const selectList = document.getElementsByName("selectAbsence") as NodeListOf<HTMLInputElement>;
 const mySelectAttendanceId = document.getElementById("selectListWithAttendanceId") as HTMLInputElement;
 const mySelectStudentId = document.getElementById("mySelectStudentId") as HTMLInputElement;
 
@@ -29,9 +27,13 @@ const listAttendanceBody = document.getElementById("listAttendanceBody") as HTML
 const tbodyListForAttendance = document.getElementById("tbodyListForAttendance") as HTMLTableSectionElement;
 const tbodyListWithStudentId = document.getElementById("tbodyListWithStudentId") as HTMLTableSectionElement;
 
-showLists();
-listAttendancesForStudents();
-listStudentsForAttendance();
+showStudentList();
+takeAttendanceList();
+listAttendance();
+listByAttendance();
+listByStudent();
+listStudentsWithAttendanceId(0);
+listAttendanceWithStudentId(0);
 
 let selectedStudent: Student;
 let selectedAttendanceId: number;
@@ -42,7 +44,10 @@ addStudentButton.addEventListener("click", async (e) => {
     console.log("Ekleme");
     try {
         await studentService.addStudent(nameInput.value, surnameInput.value);
-        showLists();
+        showStudentList();
+        takeAttendanceList();
+        listByStudent();
+        listAttendanceWithStudentId(0);
         alert(nameInput.value + " " + surnameInput.value + "\nÖğrenci Eklendi");
         nameInput.value = "";
         surnameInput.value = "";
@@ -60,7 +65,10 @@ updateStudentButton.addEventListener("click", async (e) => {
         surnameInput.value = "";
         addStudentButton.style.display = "block";
         updateStudentButton.style.display = "none";
-        showLists();
+        showStudentList();
+        takeAttendanceList();
+        listByStudent();
+        listAttendanceWithStudentId(0);
         alert("Öğrenci Güncellendi");
     } catch {
         alert("Talebe ADI ve SOYADI uygun formatta değil\n3-20 karakter arası sadece harf giriniz\nÖrnek: Bektaş Işık");
@@ -72,13 +80,17 @@ takeAttendanceButton.addEventListener("click", async (e) => {
     console.log("Yoklama alma");
     let studentAttendanceDto = new Array<StudentAttendanceDTO>();
     (await studentService.getStudents()).forEach((student: Student, index: number) => {
-        studentAttendanceDto.push(new StudentAttendanceDTO(student.getId(), selectList[index].value === "+"));
+        studentAttendanceDto.push(new StudentAttendanceDTO(student.getId(), selectList[index].checked));
     });
     try {
         await attendanceService.takeAttendance(selectPrayerTime.value, studentAttendanceDto).then(() => {
-            showLists();
-            listAttendancesForStudents();
-            listStudentsForAttendance();
+            showStudentList();
+            takeAttendanceList();
+            listAttendance();
+            listByAttendance();
+            listByStudent();
+            listStudentsWithAttendanceId(0);
+            listAttendanceWithStudentId(0);
             alert(selectPrayerTime.value + " Yoklaması Alındı");
         });
     } catch {
@@ -91,12 +103,16 @@ updateAttendanceButton.addEventListener("click", async (e) => {
     console.log("Yoklama güncelleme");
     let studentAttendanceDto = new Array<StudentAttendanceDTO>();
     (await studentService.getStudents()).forEach((student: Student, index: number) => {
-        studentAttendanceDto.push(new StudentAttendanceDTO(student.getId(), selectList[index].value === "+"));
-    })
+        studentAttendanceDto.push(new StudentAttendanceDTO(student.getId(), selectList[index].checked));
+    });
     await attendanceService.updateAttendance(selectedAttendanceId, selectPrayerTime.value, studentAttendanceDto);
-    showLists();
-    listAttendancesForStudents();
-    listStudentsForAttendance();
+    showStudentList();
+    takeAttendanceList();
+    listAttendance();
+    listByAttendance();
+    listByStudent();
+    listStudentsWithAttendanceId(0);
+    listAttendanceWithStudentId(0);
     takeAttendanceButton.style.display = "block";
     updateAttendanceButton.style.display = "none";
     alert(selectPrayerTime.value + "Yoklaması Güncellendi");
@@ -104,33 +120,27 @@ updateAttendanceButton.addEventListener("click", async (e) => {
 
 mySelectAttendanceId.addEventListener("click", (e) => {
     e.preventDefault();
-    if (!(mySelectAttendanceId.value === "")) {
+    if (!(mySelectAttendanceId.value === "0")) {
         console.log("Yoklama Seçildi");
         listStudentsWithAttendanceId(Number(mySelectAttendanceId.value));
         alert("Seçilen Yoklamanın Öğrencileri Listelendi");
     }
     else {
-        alert("Yoklama Listeniz Boş. Lütfen Yoklama Alınız...");
+        alert("Lütfen Yoklama Mevcut ise Seçiniz \nYoklama Yoksa Yoklama Alınız");
     }
 });
 
 mySelectStudentId.addEventListener("click", (e) => {
     e.preventDefault();
-    if (!(mySelectStudentId.value === "")) {
+    if (!(mySelectStudentId.value === "0")) {
         console.log("Talebe Seçildi");
         listAttendanceWithStudentId(Number(mySelectStudentId.value));
         alert("Seçilen Öğrencinin Yoklamaları Listelendi");
     }
     else {
-        alert("Yoklama Listeniz Boş. Lütfen Yoklama Alınız...");
+        alert("Lütfen Yoklama Mevcut ise Seçiniz \nYoklama Yoksa Yoklama Alınız");
     }
 });
-
-function showLists() {
-    showStudentList();
-    takeAttendanceList();
-    listAttendance();
-}
 
 async function showStudentList() {
     studentTable.innerHTML = "";
@@ -174,7 +184,10 @@ async function showStudentList() {
             e.preventDefault();
             console.log("Silme");
             await studentService.deleteStudent(Number(deleteButton.dataset.id));
-            showLists();
+            showStudentList();
+            takeAttendanceList();
+            listByStudent();
+            listAttendanceWithStudentId(0);
             alert("Öğrenci Silindi");
         });
         updateButton.addEventListener("click", (e) => {
@@ -199,24 +212,26 @@ async function takeAttendanceList() {
         const tdName = document.createElement("td");
         const tdSurname = document.createElement("td");
         const tdOption = document.createElement("td");
-        const select = document.createElement("select");
-        const option1 = document.createElement("option");
-        const option2 = document.createElement("option");
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        const span = document.createElement("span");
 
         tdId.innerHTML = student.getId().toString();
         tdName.innerText = student.getName();
         tdSurname.innerText = student.getSurname();
-        select.setAttribute("class", "form-select");
-        select.setAttribute("name", "selectAbsence");
-        select.setAttribute("aria-label", "select example");
-        option1.setAttribute("value", "+");
-        option2.setAttribute("value", "-");
-        option1.innerText = "+";
-        option2.innerText = "-";
 
-        select.appendChild(option1);
-        select.appendChild(option2);
-        tdOption.appendChild(select);
+        label.setAttribute("class", "switch");
+        input.setAttribute("type", "checkbox");
+        input.setAttribute("id", "checkbox");
+        input.checked = true;
+        input.setAttribute("name", "selectAbsence");
+        input.setAttribute("data-id", student.getId().toString());
+        span.setAttribute("class", "slider round");
+
+        label.appendChild(input);
+        label.appendChild(span);
+        tdOption.appendChild(label);
+
         tr.appendChild(tdId);
         tr.appendChild(tdName);
         tr.appendChild(tdSurname);
@@ -265,9 +280,13 @@ async function listAttendance() {
             e.preventDefault();
             console.log("Silme");
             await attendanceService.deleteAttendance(Number(deleteButton.dataset.id));
-            showLists();
-            listAttendancesForStudents();
-            listStudentsForAttendance();
+            showStudentList();
+            takeAttendanceList();
+            listAttendance();
+            listByAttendance();
+            listByStudent();
+            listStudentsWithAttendanceId(0);
+            listAttendanceWithStudentId(0);
             alert("Yoklama Silindi");
         });
         updateButton.addEventListener("click", (e) => {
@@ -284,13 +303,17 @@ async function listAttendance() {
 }
 
 /* Seçilen yoklama listesininin talebelerini gösterir. */
-async function listAttendancesForStudents() {
+async function listByAttendance() {
     mySelectAttendanceId.innerHTML = "";
-    const attendanceList = await attendanceService.getAttendances();
-    (await attendanceList).forEach((attendance) => {
+    const defaultOprion = document.createElement("option");
+    defaultOprion.setAttribute("value", "0");
+    defaultOprion.setAttribute("hidden", "true");
+    defaultOprion.innerText = "Yoklama Seçiniz";
+    mySelectAttendanceId.appendChild(defaultOprion);
+    (await attendanceService.getAttendances()).forEach((attendance) => {
         const option = document.createElement("option");
         option.setAttribute("value", attendance.getId().toString());
-        option.innerText = attendance.getToday() + " " + attendance.getPrayerTime();
+        option.innerText = attendance.getToday();
         mySelectAttendanceId.appendChild(option);
     });
 
@@ -322,16 +345,20 @@ async function listStudentsWithAttendanceId(attendanceId: number) {
 }
 
 /* Seçilen öğrencinin yoklama listesini gösterir. */
-async function listStudentsForAttendance() {
-    const studentList = await studentService.getStudents();
+async function listByStudent() { 
     mySelectStudentId.innerHTML = "";
+    const studentList = await studentService.getStudents();
+    const defaultOprion = document.createElement("option");
+    defaultOprion.setAttribute("value", "0");
+    defaultOprion.setAttribute("hidden", "true");
+    defaultOprion.innerText = "Öğrenci Seçiniz";
+    mySelectStudentId.appendChild(defaultOprion);
     studentList.forEach((student) => {
         const option = document.createElement("option");
         option.setAttribute("value", student.getId().toString());
         option.innerText = student.getName() + " " + student.getSurname();
         mySelectStudentId.appendChild(option);
     });
-
 }
 
 async function listAttendanceWithStudentId(studentId: number) {

@@ -27,7 +27,7 @@ export class StudentAttendanceService {
     }
 
     public async getStudentsByAttendanceId(attendanceId: number): Promise<StudentAttendance[]> {
-        const response = await fetch(apiUrl + '/search/?' + new URLSearchParams({
+        const response = await fetch(apiUrl + '/?' + new URLSearchParams({
             attendanceId: attendanceId.toString()
         }), {
             method: 'GET',
@@ -46,7 +46,7 @@ export class StudentAttendanceService {
     }
 
     public async getAttendancesByStudentId(studentId: number): Promise<StudentAttendance[]> {
-        const response = await fetch(apiUrl + '/search/?' + new URLSearchParams({
+        const response = await fetch(apiUrl + '/?' + new URLSearchParams({
             studentId: studentId.toString()
         }), {
             method: 'GET',
