@@ -27,15 +27,4 @@ export class Student {
     public getAbsent(): number {
         return this._absent;
     }
-
-    public setName(name: string) {
-        this._name = name;
-    }
-    public setSurname(surname: string) {
-        this._surname = surname;
-    }
-
-    public showInfoStudent() {
-        console.log(this._name + " " + this._surname + " " + this._absent);
-    }
 }
